@@ -1,0 +1,80 @@
+name: plansaathi
+x-logging: &logging
+  driver: json-file
+  options: { max-size: "10m", max-file: "3" }
+services:
+  db:
+    image: plansaathi-db:0.4.0
+    build: { context: ./deploy/postgres }
+    restart: unless-stopped
+    environment: { POSTGRES_DB: plansaathi, POSTGRES_USER: plansaathi, POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?required}" }
+    command: ["postgres", "-c", "shared_buffers=128MB", "-c", "max_connections=40", "-c", "log_min_duration_statement=1000", "-c", "log_parameter_max_length=0", "-c", "log_parameter_max_length_on_error=0", "-c", "log_error_verbosity=terse"]
+    volumes: ["database:/var/lib/postgresql"]
+    networks: [backend]
+    mem_limit: 512m
+    healthcheck: { test: ["CMD-SHELL", "pg_isready -U plansaathi -d plansaathi"], interval: 10s, timeout: 5s, retries: 10 }
+    logging: *logging
+  app:
+    image: plansaathi-app:0.4.0
+    build: { context: ., target: app }
+    restart: unless-stopped
+    env_file: .env.production
+    environment: { NODE_ENV: production, HOSTNAME: 0.0.0.0, PORT: 3000 }
+    depends_on: { db: { condition: service_healthy } }
+    networks: [frontend, backend]
+    mem_limit: 768m
+    read_only: true
+    tmpfs: ["/tmp:uid=1001,gid=1001,size=64m", "/app/.next/cache:uid=1001,gid=1001,size=32m"]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    logging: *logging
+  worker:
+    image: plansaathi-app:0.4.0
+    restart: unless-stopped
+    command: ["node", "scripts/ops-worker.mjs"]
+    environment: { WORKER_APP_URL: "http://app:3000", OPS_TOKEN: "${OPS_TOKEN:?required}" }
+    depends_on: [app]
+    networks: [backend]
+    mem_limit: 128m
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    logging: *logging
+  caddy:
+    image: plansaathi-proxy:0.4.0
+    build: { context: ./deploy/proxy }
+    restart: unless-stopped
+    environment: { DOMAIN: "${DOMAIN:?required}" }
+    ports: ["80:80", "443:443", "443:443/udp"]
+    volumes: ["./deploy/Caddyfile:/etc/caddy/Caddyfile:ro", "caddy_data:/data", "caddy_config:/config"]
+    networks: [frontend]
+    mem_limit: 128m
+    read_only: true
+    tmpfs: ["/tmp:size=32m"]
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]
+    security_opt: [no-new-privileges:true]
+    logging: *logging
+  backup:
+    image: plansaathi-app:0.4.0
+    profiles: [tools]
+    env_file: .env.backup
+    entrypoint: ["node", "scripts/backup.mjs"]
+    volumes: ["./.private-backups:/backups"]
+    networks: [frontend]
+    mem_limit: 128m
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    logging: *logging
+  migrate:
+    image: plansaathi-migrate:0.4.0
+    build: { context: ., target: migrate }
+    profiles: [tools]
+    env_file: .env.production
+    environment: { NODE_ENV: production }
+    networks: [backend]
+    depends_on: { db: { condition: service_healthy } }
+    logging: *logging
+volumes: { database: {}, caddy_data: {}, caddy_config: {} }
+networks: { frontend: {}, backend: { internal: true } }

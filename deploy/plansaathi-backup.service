@@ -1,0 +1,8 @@
+[Unit]
+Description=Encrypted PlanSaathi database backup
+After=docker.service
+Requires=docker.service
+[Service]
+Type=oneshot
+Environment=PROJECT_DIRECTORY=/opt/plansaathi
+ExecStart=/bin/bash /opt/plansaathi/deploy/backup.sh

@@ -1,0 +1,1099 @@
+{
+  "version": 1,
+  "id": "40d7dd95-515b-4d1b-b537-b3ec6e1a83df",
+  "name": "40 x 30 Family Residence",
+  "client": "Manual concept study - verify against site",
+  "rooms": [
+    {
+      "id": "room-0",
+      "name": "Bedroom 2",
+      "points": [
+        {
+          "x": -6.096,
+          "z": -4.572
+        },
+        {
+          "x": -3.3528000000000002,
+          "z": -4.572
+        },
+        {
+          "x": -3.3528000000000002,
+          "z": -0.9144000000000001
+        },
+        {
+          "x": -6.096,
+          "z": -0.9144000000000001
+        }
+      ],
+      "height": 2.9,
+      "wallColor": "#ebe9df",
+      "floor": "oak",
+      "openings": [
+        {
+          "id": "door-0",
+          "edge": 2,
+          "offset": 0.7,
+          "width": 0.85,
+          "height": 2.1,
+          "sill": 0,
+          "type": "door",
+          "doorStyle": "interior",
+          "hinge": "left",
+          "swing": 70
+        },
+        {
+          "id": "window-0",
+          "edge": 0,
+          "offset": 0.5,
+          "width": 1.4,
+          "height": 1.2,
+          "sill": 0.9,
+          "type": "window"
+        }
+      ],
+      "openEdges": []
+    },
+    {
+      "id": "room-1",
+      "name": "Wardrobe nook",
+      "points": [
+        {
+          "x": -3.3528000000000002,
+          "z": -4.572
+        },
+        {
+          "x": -2.4384,
+          "z": -4.572
+        },
+        {
+          "x": -2.4384,
+          "z": -2.7432000000000003
+        },
+        {
+          "x": -3.3528000000000002,
+          "z": -2.7432000000000003
+        }
+      ],
+      "height": 2.9,
+      "wallColor": "#ebe9df",
+      "floor": "oak",
+      "openings": [],
+      "openEdges": []
+    },
+    {
+      "id": "room-2",
+      "name": "Hall",
+      "points": [
+        {
+          "x": -3.3528000000000002,
+          "z": -2.7432000000000003
+        },
+        {
+          "x": -2.4384,
+          "z": -2.7432000000000003
+        },
+        {
+          "x": -2.4384,
+          "z": -0.9144000000000001
+        },
+        {
+          "x": -3.3528000000000002,
+          "z": -0.9144000000000001
+        }
+      ],
+      "height": 2.9,
+      "wallColor": "#ebe9df",
+      "floor": "oak",
+      "openings": [],
+      "openEdges": []
+    },
+    {
+      "id": "room-3",
+      "name": "Bedroom 3",
+      "points": [
+        {
+          "x": -2.4384,
+          "z": -4.572
+        },
+        {
+          "x": 0.3048,
+          "z": -4.572
+        },
+        {
+          "x": 0.3048,
+          "z": -0.9144000000000001
+        },
+        {
+          "x": -2.4384,
+          "z": -0.9144000000000001
+        }
+      ],
+      "height": 2.9,
+      "wallColor": "#ebe9df",
+      "floor": "oak",
+      "openings": [
+        {
+          "id": "door-3",
+          "edge": 2,
+          "offset": 0.7,
+          "width": 0.85,
+          "height": 2.1,
+          "sill": 0,
+          "type": "door",
+          "doorStyle": "interior",
+          "hinge": "left",
+          "swing": 70
+        },
+        {
+          "id": "window-3",
+          "edge": 0,
+          "offset": 0.5,
+          "width": 1.4,
+          "height": 1.2,
+          "sill": 0.9,
+          "type": "window"
+        }
+      ],
+      "openEdges": []
+    },
+    {
+      "id": "room-4",
+      "name": "Bathroom",
+      "points": [
+        {
+          "x": 0.3048,
+          "z": -4.572
+        },
+        {
+          "x": 1.8288000000000002,
+          "z": -4.572
+        },
+        {
+          "x": 1.8288000000000002,
+          "z": -0.9144000000000001
+        },
+        {
+          "x": 0.3048,
+          "z": -0.9144000000000001
+        }
+      ],
+      "height": 2.9,
+      "wallColor": "#ebe9df",
+      "floor": "ceramic",
+      "openings": [
+        {
+          "id": "door-4",
+          "edge": 2,
+          "offset": 0.7,
+          "width": 0.85,
+          "height": 2.1,
+          "sill": 0,
+          "type": "door",
+          "doorStyle": "interior",
+          "hinge": "left",
+          "swing": 70
+        }
+      ],
+      "openEdges": []
+    },
+    {
+      "id": "room-5",
+      "name": "Master bedroom",
+      "points": [
+        {
+          "x": 1.8288000000000002,
+          "z": -4.572
+        },
+        {
+          "x": 6.096,
+          "z": -4.572
+        },
+        {
+          "x": 6.096,
+          "z": -0.9144000000000001
+        },
+        {
+          "x": 1.8288000000000002,
+          "z": -0.9144000000000001
+        }
+      ],
+      "height": 2.9,
+      "wallColor": "#d5ddd2",
+      "floor": "oak",
+      "openings": [
+        {
+          "id": "door-5",
+          "edge": 2,
+          "offset": 0.7,
+          "width": 0.85,
+          "height": 2.1,
+          "sill": 0,
+          "type": "door",
+          "doorStyle": "interior",
+          "hinge": "left",
+          "swing": 70
+        },
+        {
+          "id": "window-5",
+          "edge": 0,
+          "offset": 0.5,
+          "width": 1.4,
+          "height": 1.2,
+          "sill": 0.9,
+          "type": "window"
+        }
+      ],
+      "openEdges": []
+    },
+    {
+      "id": "room-6",
+      "name": "Family room",
+      "points": [
+        {
+          "x": -6.096,
+          "z": -0.9144000000000001
+        },
+        {
+          "x": -1.524,
+          "z": -0.9144000000000001
+        },
+        {
+          "x": -1.524,
+          "z": 4.572
+        },
+        {
+          "x": -6.096,
+          "z": 4.572
+        }
+      ],
+      "height": 2.9,
+      "wallColor": "#ebe9df",
+      "floor": "oak",
+      "openings": [
+        {
+          "id": "main",
+          "edge": 2,
+          "offset": 0.7,
+          "width": 1,
+          "height": 2.2,
+          "sill": 0,
+          "type": "door",
+          "doorStyle": "main",
+          "swing": 65
+        }
+      ],
+      "openEdges": [
+        1
+      ]
+    },
+    {
+      "id": "room-7",
+      "name": "Dining",
+      "points": [
+        {
+          "x": -1.524,
+          "z": -0.9144000000000001
+        },
+        {
+          "x": 1.2192,
+          "z": -0.9144000000000001
+        },
+        {
+          "x": 1.2192,
+          "z": 4.572
+        },
+        {
+          "x": -1.524,
+          "z": 4.572
+        }
+      ],
+      "height": 2.9,
+      "wallColor": "#ebe9df",
+      "floor": "oak",
+      "openings": [],
+      "openEdges": [
+        1,
+        3
+      ]
+    },
+    {
+      "id": "room-8",
+      "name": "Kitchen",
+      "points": [
+        {
+          "x": 1.2192,
+          "z": -0.9144000000000001
+        },
+        {
+          "x": 4.2672,
+          "z": -0.9144000000000001
+        },
+        {
+          "x": 4.2672,
+          "z": 4.572
+        },
+        {
+          "x": 1.2192,
+          "z": 4.572
+        }
+      ],
+      "height": 2.9,
+      "wallColor": "#ebe9df",
+      "floor": "ceramic",
+      "openings": [],
+      "openEdges": [
+        3
+      ]
+    },
+    {
+      "id": "room-9",
+      "name": "Store",
+      "points": [
+        {
+          "x": 4.2672,
+          "z": -0.9144000000000001
+        },
+        {
+          "x": 6.096,
+          "z": -0.9144000000000001
+        },
+        {
+          "x": 6.096,
+          "z": 1.2192
+        },
+        {
+          "x": 4.2672,
+          "z": 1.2192
+        }
+      ],
+      "height": 2.9,
+      "wallColor": "#ebe9df",
+      "floor": "ceramic",
+      "openings": [
+        {
+          "id": "door-9",
+          "edge": 3,
+          "offset": 0.7,
+          "width": 0.85,
+          "height": 2.1,
+          "sill": 0,
+          "type": "door",
+          "doorStyle": "interior",
+          "hinge": "left",
+          "swing": 70
+        }
+      ],
+      "openEdges": []
+    },
+    {
+      "id": "room-10",
+      "name": "Utility",
+      "points": [
+        {
+          "x": 4.2672,
+          "z": 1.2192
+        },
+        {
+          "x": 6.096,
+          "z": 1.2192
+        },
+        {
+          "x": 6.096,
+          "z": 4.572
+        },
+        {
+          "x": 4.2672,
+          "z": 4.572
+        }
+      ],
+      "height": 2.9,
+      "wallColor": "#ebe9df",
+      "floor": "ceramic",
+      "openings": [
+        {
+          "id": "door-10",
+          "edge": 2,
+          "offset": 0.7,
+          "width": 0.85,
+          "height": 2.1,
+          "sill": 0,
+          "type": "door",
+          "doorStyle": "interior",
+          "hinge": "left",
+          "swing": 70
+        }
+      ],
+      "openEdges": []
+    }
+  ],
+  "items": [
+    {
+      "id": "4e83c6d3-da12-448c-9c23-5b98c6a6c7f7",
+      "roomId": "room-0",
+      "kind": "single-bed",
+      "name": "Single bed",
+      "x": -4.8768,
+      "z": -3.3528000000000002,
+      "y": 0,
+      "rotation": 0,
+      "width": 1,
+      "depth": 2.1,
+      "height": 0.85,
+      "color": "#84978e",
+      "material": "linen",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "e36d9087-877b-406f-a4e4-7b9815c26466",
+      "roomId": "room-0",
+      "kind": "wardrobe",
+      "name": "Wardrobe",
+      "x": -3.81,
+      "z": -3.6576000000000004,
+      "y": 0,
+      "rotation": 90,
+      "width": 1.1,
+      "depth": 0.6,
+      "height": 2.3,
+      "color": "#c9b5a1",
+      "material": "wood",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "f68b0a57-7feb-4f6c-8ae2-4b5dda75ab8b",
+      "roomId": "room-0",
+      "kind": "ceiling-fan",
+      "name": "Ceiling fan",
+      "x": -4.7244,
+      "z": -2.7432000000000003,
+      "y": 2.5,
+      "rotation": 0,
+      "width": 1.2,
+      "depth": 1.2,
+      "height": 0.25,
+      "color": "#8e7055",
+      "material": "wood",
+      "variant": 0,
+      "enabled": true,
+      "locked": false,
+      "powerLevel": 60,
+      "airflowAngle": 0,
+      "airflowRange": 4
+    },
+    {
+      "id": "d56b9d95-bea6-4a9b-8e1c-8d03d2feba16",
+      "roomId": "room-3",
+      "kind": "bed",
+      "name": "Platform bed",
+      "x": -1.0668,
+      "z": -3.3528000000000002,
+      "y": 0,
+      "rotation": 0,
+      "width": 1.5,
+      "depth": 2.15,
+      "height": 0.9,
+      "color": "#e2d9c8",
+      "material": "linen",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "39dd7c00-4359-4130-9c61-dbde19f2a254",
+      "roomId": "room-3",
+      "kind": "ceiling-fan",
+      "name": "Ceiling fan",
+      "x": -1.0668,
+      "z": -2.7432000000000003,
+      "y": 2.5,
+      "rotation": 0,
+      "width": 1.2,
+      "depth": 1.2,
+      "height": 0.25,
+      "color": "#8e7055",
+      "material": "wood",
+      "variant": 0,
+      "enabled": true,
+      "locked": false,
+      "powerLevel": 60,
+      "airflowAngle": 0,
+      "airflowRange": 4
+    },
+    {
+      "id": "ec0daae4-81bd-4d68-83d8-48e305f90735",
+      "roomId": "room-5",
+      "kind": "bed",
+      "name": "Platform bed",
+      "x": 3.9624,
+      "z": -3.3528000000000002,
+      "y": 0,
+      "rotation": 0,
+      "width": 1.8,
+      "depth": 2.15,
+      "height": 0.9,
+      "color": "#e2d9c8",
+      "material": "linen",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "efbce9ad-3c25-4fa7-8e8b-9e63b6f75de8",
+      "roomId": "room-5",
+      "kind": "side-table",
+      "name": "Side table",
+      "x": 2.5908,
+      "z": -3.3528000000000002,
+      "y": 0,
+      "rotation": 0,
+      "width": 0.48,
+      "depth": 0.48,
+      "height": 0.5,
+      "color": "#815e43",
+      "material": "wood",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "970d4f9d-34cc-4c97-bcda-7c475bc6fca9",
+      "roomId": "room-5",
+      "kind": "wardrobe",
+      "name": "Wardrobe",
+      "x": 5.638800000000001,
+      "z": -3.048,
+      "y": 0,
+      "rotation": 90,
+      "width": 1.8,
+      "depth": 0.6,
+      "height": 2.3,
+      "color": "#c9b5a1",
+      "material": "wood",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "552b42b6-496b-4674-bf21-7529400f4e55",
+      "roomId": "room-5",
+      "kind": "ac",
+      "name": "Split AC",
+      "x": 4.572,
+      "z": -4.2672,
+      "y": 2.25,
+      "rotation": 0,
+      "width": 0.95,
+      "depth": 0.24,
+      "height": 0.3,
+      "color": "#f0f0e9",
+      "material": "metal",
+      "variant": 0,
+      "enabled": true,
+      "locked": false,
+      "powerLevel": 60,
+      "airflowAngle": 0,
+      "airflowRange": 4
+    },
+    {
+      "id": "308e13ad-4c93-43ba-b037-aae11406659d",
+      "roomId": "room-5",
+      "kind": "ceiling-fan",
+      "name": "Ceiling fan",
+      "x": 3.9624,
+      "z": -2.4384,
+      "y": 2.5,
+      "rotation": 0,
+      "width": 1.2,
+      "depth": 1.2,
+      "height": 0.25,
+      "color": "#8e7055",
+      "material": "wood",
+      "variant": 0,
+      "enabled": true,
+      "locked": false,
+      "powerLevel": 60,
+      "airflowAngle": 0,
+      "airflowRange": 4
+    },
+    {
+      "id": "ac1c3773-47ca-4fad-a9d4-007dde340833",
+      "roomId": "room-4",
+      "kind": "toilet",
+      "name": "Toilet",
+      "x": 0.9144000000000001,
+      "z": -3.9624,
+      "y": 0,
+      "rotation": 0,
+      "width": 0.4,
+      "depth": 0.68,
+      "height": 0.8,
+      "color": "#f0eee5",
+      "material": "ceramic",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "19cfff9f-560c-4c3a-96a8-6583f86ab2b4",
+      "roomId": "room-4",
+      "kind": "vanity",
+      "name": "Bathroom vanity",
+      "x": 0.9144000000000001,
+      "z": -2.1336,
+      "y": 0,
+      "rotation": 90,
+      "width": 0.65,
+      "depth": 0.5,
+      "height": 0.85,
+      "color": "#cfbda1",
+      "material": "wood",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "849b3b26-3427-4f71-9e03-82ce37e26de7",
+      "roomId": "room-6",
+      "kind": "sofa",
+      "name": "Modular sofa",
+      "x": -5.1816,
+      "z": 2.4384,
+      "y": 0,
+      "rotation": 90,
+      "width": 2.6,
+      "depth": 1,
+      "height": 0.82,
+      "color": "#647767",
+      "material": "linen",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "90a73a52-a12d-4b63-b9b0-b796de8aac6f",
+      "roomId": "room-6",
+      "kind": "coffee-table",
+      "name": "Sculpture table",
+      "x": -3.6576000000000004,
+      "z": 2.4384,
+      "y": 0,
+      "rotation": 0,
+      "width": 1.3,
+      "depth": 0.7,
+      "height": 0.36,
+      "color": "#c9b5a1",
+      "material": "stone",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "0cbbace8-a175-4967-98aa-7c481c96fc8c",
+      "roomId": "room-6",
+      "kind": "rug",
+      "name": "Woven rug",
+      "x": -3.6576000000000004,
+      "z": 2.4384,
+      "y": 0,
+      "rotation": 0,
+      "width": 2.5,
+      "depth": 2,
+      "height": 0.02,
+      "color": "#d5c5ab",
+      "material": "linen",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "12e62238-f3ae-406d-89ff-78992dfd021b",
+      "roomId": "room-6",
+      "kind": "tv-unit",
+      "name": "Media console",
+      "x": -1.8897599999999999,
+      "z": 2.1336,
+      "y": 0,
+      "rotation": 270,
+      "width": 1.8,
+      "depth": 0.4,
+      "height": 1.65,
+      "color": "#9a7555",
+      "material": "wood",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "fcb24d97-4d23-41b9-a58f-c7669a87c67d",
+      "roomId": "room-6",
+      "kind": "plant",
+      "name": "Fiddle-leaf fig",
+      "x": -5.486400000000001,
+      "z": -0.3048,
+      "y": 0,
+      "rotation": 0,
+      "width": 0.65,
+      "depth": 0.65,
+      "height": 1.7,
+      "color": "#3f6550",
+      "material": "linen",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "47723f50-39d4-4c8b-9c08-5b2e37da6314",
+      "roomId": "room-6",
+      "kind": "floor-lamp",
+      "name": "Arc floor lamp",
+      "x": -5.1816,
+      "z": 3.9624,
+      "y": 0,
+      "rotation": 0,
+      "width": 0.55,
+      "depth": 0.55,
+      "height": 1.8,
+      "color": "#bd9d67",
+      "material": "metal",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "faf7daea-3ac8-45f5-903d-ec40baa6fc3d",
+      "roomId": "room-6",
+      "kind": "ceiling-fan",
+      "name": "Ceiling fan",
+      "x": -3.6576000000000004,
+      "z": 2.1336,
+      "y": 2.5,
+      "rotation": 0,
+      "width": 1.2,
+      "depth": 1.2,
+      "height": 0.25,
+      "color": "#8e7055",
+      "material": "wood",
+      "variant": 0,
+      "enabled": true,
+      "locked": false,
+      "powerLevel": 60,
+      "airflowAngle": 0,
+      "airflowRange": 4
+    },
+    {
+      "id": "d0bf4184-d050-4049-8ebf-5e95a8c77d67",
+      "roomId": "room-6",
+      "kind": "doormat",
+      "name": "Door mat",
+      "x": -2.8956,
+      "z": 4.2672,
+      "y": 0,
+      "rotation": 0,
+      "width": 0.75,
+      "depth": 0.45,
+      "height": 0.025,
+      "color": "#a29172",
+      "material": "linen",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "0171b4d7-83af-44f1-b8fd-1fd3d6ffb538",
+      "roomId": "room-7",
+      "kind": "dining-table",
+      "name": "Dining table",
+      "x": -0.1524,
+      "z": 2.1336,
+      "y": 0,
+      "rotation": 90,
+      "width": 1.6,
+      "depth": 0.9,
+      "height": 0.76,
+      "color": "#b98863",
+      "material": "wood",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "f125d128-8946-4a7d-9653-959272b85f86",
+      "roomId": "room-7",
+      "kind": "dining-chair",
+      "name": "Dining chair",
+      "x": -0.762,
+      "z": 1.524,
+      "y": 0,
+      "rotation": 90,
+      "width": 0.5,
+      "depth": 0.55,
+      "height": 0.84,
+      "color": "#b98863",
+      "material": "wood",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "0d8c23b7-3efc-4228-8280-580047090190",
+      "roomId": "room-7",
+      "kind": "dining-chair",
+      "name": "Dining chair",
+      "x": 0.45720000000000005,
+      "z": 1.524,
+      "y": 0,
+      "rotation": 270,
+      "width": 0.5,
+      "depth": 0.55,
+      "height": 0.84,
+      "color": "#b98863",
+      "material": "wood",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "078bf8b2-b1ca-48fc-a711-0d4c47996cd3",
+      "roomId": "room-7",
+      "kind": "dining-chair",
+      "name": "Dining chair",
+      "x": -0.762,
+      "z": 2.7432000000000003,
+      "y": 0,
+      "rotation": 90,
+      "width": 0.5,
+      "depth": 0.55,
+      "height": 0.84,
+      "color": "#b98863",
+      "material": "wood",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "75bb2a85-df8f-4993-8aff-adcbf6c04d43",
+      "roomId": "room-7",
+      "kind": "dining-chair",
+      "name": "Dining chair",
+      "x": 0.45720000000000005,
+      "z": 2.7432000000000003,
+      "y": 0,
+      "rotation": 270,
+      "width": 0.5,
+      "depth": 0.55,
+      "height": 0.84,
+      "color": "#b98863",
+      "material": "wood",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "2ed113e4-67ac-45f2-904e-2214975eddcd",
+      "roomId": "room-7",
+      "kind": "pendant",
+      "name": "Pendant light",
+      "x": -0.1524,
+      "z": 2.1336,
+      "y": 2.25,
+      "rotation": 0,
+      "width": 0.65,
+      "depth": 0.65,
+      "height": 0.5,
+      "color": "#c4a67c",
+      "material": "linen",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "3402b6c9-7cad-4d12-96fc-9bd878a6c377",
+      "roomId": "room-8",
+      "kind": "fridge",
+      "name": "Double-door fridge",
+      "x": 3.6576000000000004,
+      "z": -0.3048,
+      "y": 0,
+      "rotation": 0,
+      "width": 0.86,
+      "depth": 0.72,
+      "height": 1.8,
+      "color": "#a6aca9",
+      "material": "metal",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "2bbcee25-8bbb-4673-b568-4247f4870cef",
+      "roomId": "room-8",
+      "kind": "kitchen-sink",
+      "name": "Kitchen sink",
+      "x": 3.2004,
+      "z": 4.1148,
+      "y": 0,
+      "rotation": 0,
+      "width": 1.2,
+      "depth": 0.62,
+      "height": 0.92,
+      "color": "#d1c9b9",
+      "material": "stone",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "5164de06-20ec-4e9b-942a-79d627fe38a4",
+      "roomId": "room-8",
+      "kind": "kitchen-cabinet",
+      "name": "Base cabinet",
+      "x": 3.870960000000001,
+      "z": 2.4384,
+      "y": 0,
+      "rotation": 90,
+      "width": 1.2,
+      "depth": 0.6,
+      "height": 0.9,
+      "color": "#b8b9a4",
+      "material": "wood",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "5aa0d648-9e9a-44ac-b8d3-77308d3e495f",
+      "roomId": "room-8",
+      "kind": "hob",
+      "name": "Induction hob",
+      "x": 3.870960000000001,
+      "z": 2.4384,
+      "y": 0.91,
+      "rotation": 90,
+      "width": 0.75,
+      "depth": 0.5,
+      "height": 0.06,
+      "color": "#292e30",
+      "material": "glass",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "3d2d3942-56b3-4ca8-af20-5cb5ee093c45",
+      "roomId": "room-8",
+      "kind": "chimney",
+      "name": "Kitchen chimney",
+      "x": 3.870960000000001,
+      "z": 2.4384,
+      "y": 1.55,
+      "rotation": 90,
+      "width": 0.9,
+      "depth": 0.5,
+      "height": 0.85,
+      "color": "#7d8682",
+      "material": "metal",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "9a8fadf6-436c-465f-a1c6-326e27e07620",
+      "roomId": "room-8",
+      "kind": "microwave",
+      "name": "Microwave oven",
+      "x": 3.870960000000001,
+      "z": 3.3528000000000002,
+      "y": 0.92,
+      "rotation": 90,
+      "width": 0.52,
+      "depth": 0.42,
+      "height": 0.32,
+      "color": "#8e9793",
+      "material": "metal",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "ca20f521-a322-4d2c-9266-a31337312ea4",
+      "roomId": "room-8",
+      "kind": "ceiling-light",
+      "name": "Ceiling light",
+      "x": 2.7432000000000003,
+      "z": 1.524,
+      "y": 2.78,
+      "rotation": 0,
+      "width": 0.5,
+      "depth": 0.5,
+      "height": 0.12,
+      "color": "#ede7d8",
+      "material": "plastic",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "f47a4d62-3da1-4545-8bf5-0fb377f06473",
+      "roomId": "room-10",
+      "kind": "washing-machine",
+      "name": "Washing machine",
+      "x": 4.8768,
+      "z": 1.8288000000000002,
+      "y": 0,
+      "rotation": 0,
+      "width": 0.6,
+      "depth": 0.62,
+      "height": 0.85,
+      "color": "#eeeee7",
+      "material": "metal",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "c3eb6638-6807-4094-a2d6-89b7deae9a19",
+      "roomId": "room-10",
+      "kind": "inverter",
+      "name": "Home inverter & battery",
+      "x": 5.486400000000001,
+      "z": 3.6576000000000004,
+      "y": 0,
+      "rotation": 0,
+      "width": 0.55,
+      "depth": 0.48,
+      "height": 0.7,
+      "color": "#e2dfd2",
+      "material": "metal",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    },
+    {
+      "id": "614c1511-6fa2-4b3b-ab27-d3ae97ee6cb0",
+      "roomId": "room-9",
+      "kind": "bookshelf",
+      "name": "Open bookshelf",
+      "x": 5.1816,
+      "z": -0.3048,
+      "y": 0,
+      "rotation": 0,
+      "width": 1.2,
+      "depth": 0.35,
+      "height": 1.9,
+      "color": "#b1906c",
+      "material": "wood",
+      "variant": 0,
+      "enabled": true,
+      "locked": false
+    }
+  ],
+  "updatedAt": "2026-10-29T05:37:38.533Z",
+  "units": {
+    "length": "ft",
+    "area": "ft2"
+  }
+}

@@ -1,0 +1,111 @@
+---
+version: alpha
+name: PlanSaathi
+description: A private spatial design workspace for interior designers.
+colors:
+  primary: "#3c49eb"
+  background: "#f7f8fc"
+  foreground: "#171a2b"
+  muted: "#62677b"
+  border: "#e4e7f0"
+  canvas: "#edf0eb"
+  accent: "#3c49eb"
+  surface: "#ffffff"
+  graphite: "#171a2b"
+  platform-background: "#f7f8fc"
+  editor-background: "#eef2f2"
+typography:
+  sans:
+    fontFamily: "Geist Variable, system-ui, sans-serif"
+    fontSize: "14px"
+    lineHeight: "1.65"
+  display:
+    fontFamily: "Space Grotesk Variable, Geist Variable, sans-serif"
+  mono:
+    fontFamily: "ui-monospace, monospace"
+rounded:
+  DEFAULT: "7px"
+  sm: "0.25rem"
+  lg: "0.75rem"
+spacing:
+  base: "0.25rem"
+  panel: "1rem"
+  control: "2.5rem"
+components:
+  button:
+    rounded: "7px"
+  dialog:
+    rounded: "0.75rem"
+  input:
+    rounded: "7px"
+---
+
+# PlanSaathi design system
+
+## Overview
+
+The owner rejected the previous teal/brass identity, isometric cube logo and old typography on 30 October 2026. The approved scope is a new modern visual identity and landing, with shared brand, type and primary accents carried into the application. Cobalt on clear white gives the design software a crisp, confident character; real editable space is the subject. The signature is a paired open-room-corner symbol and a lowercase outlined wordmark, followed by an actual product-rendered room.
+
+Audience: interior designers and small practices in India. English UI, INR billing, metric/imperial display units and metre-based stored geometry. Brand/marketing register for the public landing; product register for authenticated working screens. The landing can use large display type and generous spacing. Working controls keep their existing readable density, geometry, state and security behavior. No Japan-market scope is inferred.
+
+Business and interaction authority remains the owner's confirmed product/subscription scope, `UX-CONTRACT.md` and the server contracts. No invented trial, customer logos, testimonial, account activity, photorealistic output, real-time collaboration or automatic plan interpretation. Live sales/indexing and production setup remain gated as described in the production plan.
+
+## Colors
+
+Canonical runtime palette: `src/brand/brand.css`. Cobalt primary #3c49eb; pressed/hover #2935cb; ink #171a2b; muted #62677b; ground #f7f8fc; tint #eef0ff; border #e4e7f0; white surfaces. Cobalt has readable white action text and is the shared focus/action color. Color never replaces status text. Graphite/navy remains appropriate for a working sidebar/header, with a white logo variant. Customer room materials and canvas lighting are separate from the product brand.
+
+| Role | Runtime ownership | Consumers |
+| --- | --- | --- |
+| Brand palette | `--brand-*` in `src/brand/brand.css` | Marketing stylesheet; aliases in platform/editor CSS |
+| Product primary/type/surface aliases | `--pf-forest`, `--pf-ink`, `--pf-ground`, etc. in `src/platform/platform.css`; corresponding editor variables in `src/PremiumStudio.css` | Existing account/editor controls without behavior changes |
+| Logo paths | `BRAND_PATHS` in `src/brand/BrandMark.tsx` | Generator, favicon, social image |
+| Shared logo | `src/brand/Brand.tsx`; compatibility re-export from platform/shared | Landing, auth, platform; editor retains its focus-workspace link and uses the reversed asset |
+| Portable SVG assets and generated palette adapter | `scripts/generate_brand.py` reads paths/CSS and the locked Geist font; writes `public/brand/*.svg`, icon.svg and `src/brand/palette.ts` | Font-independent outlined wordmarks; social metadata image |
+| Typography | Local Latin variable WOFF2 files declared in brand.css | Geist Variable body/controls; Space Grotesk Variable display |
+| 4px spacing base, 7px product controls/12px dialogs | Existing shared styles and controls | Product forms, dialogs, panels |
+| Working canvas #edf0eb | `StudioScene` in `src/scene.ts` | Saved-project editor; marketing demo explicitly uses #eef0f8 background |
+
+This is maintained runtime-source ownership (Model B), not CSS generated from frontmatter. The generated TypeScript social-image palette is an adapter, not a second editable palette. Regenerate brand assets when changing their source. Legacy hue names such as forest/brass remain compatibility aliases; they now resolve to the cobalt identity. Concrete room colors are preserved.
+
+## Typography
+
+Locally hosted Geist Variable body/controls and a Geist 650 outlined wordmark. Space Grotesk Variable provides the geometric display voice. Marketing H1 uses a responsive 40–90px range with deliberate tight tracking; working typography preserves the 14px body/12px utility baseline. Native font weights/ranges avoid artificial bolding. Numeric controls use tabular figures. Exported wordmarks are paths, not text requiring the viewer to install fonts. PDF text continues its documented compatible-font/transliteration behavior.
+
+## Layout
+
+Public page: restrained navigation, large product thesis, a wide real-room example, real capability strip, three illustrated workflow steps, one flat cobalt pricing region, native FAQ disclosures and clear account destinations. The room poster reserves the same stage as the interactive renderer. Three.js loads only after an explicit view/material/demo action; loading is bounded, errors are recoverable, and closing/offscreen cleanup releases the scene. Demo changes never create/save projects or consume credits.
+
+Authenticated screens retain their working shell, actual project data, validation, permissions and save/conflict behavior. New type and primary accents do not invent new workflows. The editor remains a spatial workbench with room/catalog properties and its largest continuous canvas.
+
+## Elevation & Depth
+
+The actual spatial model supplies depth. Use fine borders and restrained shadows around the example viewport and floating controls. No decorative stacked cards, fake activity or unsupported photorealistic outcome. The first-load poster is captured from the real renderer, not synthetic imagery.
+
+## Shapes
+
+The logo consists of two equal-thickness open room corners turned 180 degrees, balanced on a 48-unit grid. Keep at least one stroke-width of external clear space; maintain monochrome and reversed versions. Do not add gradients, roof/cube details or distort proportions. Small favicon uses a cobalt tile and reversed symbol; standalone mark remains usable at 16–40px. Product control/dialog radii stay as recorded above; public layouts can use a restrained viewport radius.
+
+## Components
+
+Reuse shared app primitives, their focus/validation/state contracts and native link/button semantics. Marketing uses native anchors and details/summary; demo buttons expose pressed/disabled states and accessible names. Every primary action remains at least 44px, including mobile. Readable utility labels use a 12px floor. Keyboard focus is visible, reduced motion is honored, and demo motion stays paused unless explicitly operated. No account, billing or permission state is inferred from appearance.
+
+## Do's and Don'ts
+
+Do show editable concepts honestly. Do preserve private project/source-plan handling, subscription limits, session security and pending launch gates. Do reuse the same logo assets/type/accent roles across public and authenticated surfaces. Do not claim that a PDF automatically becomes a complete model, that the concept is photorealistic/engineering approved, or that this local redesign is a public deployment.
+
+
+## Designer workspace extensions
+
+Length selectors support metres, centimetres, millimetres, feet and inches. Area selectors independently support square metres, square centimetres, square feet and square yards. Unit changes never rescale the design. Shared NumberField owns conversion at its boundary; model and renderer store metres. Whole-home framing and open boundary edges support room suites and open-plan zones. Door leaves and swing arcs show main, interior, glass, sliding and open-passage options.
+
+The 43-object catalog uses procedural geometry and matching thumbnails, including wall art, tube lights and CFL bulbs. Systems lists provide text-labeled Power on/off buttons and explicit current state, separate from airflow visibility. Per-device air/fan speed, direction and illustrative range own operation. Eleven floor finishes and sixteen wall swatches retain arbitrary custom colors. `ColorSwatches` accepts a native picker and validated typed `#RRGGBB` value with inline errors; the selected check adapts to swatch luminance.
+
+`FinishControls.tsx` owns sofa shapes (three-seater, two-seater, left/right chaise), cloth textures (plain, woven, bouclé, ribbed), wall textures (paint, limewash, brick, concrete, wood panel), and supplementary thumbnails. Dimensions, material, color and texture remain separate model properties. A shape change does not silently rescale a designer's dimensions.
+
+Full-height walls are the default; foreground transparency is an explicit view option that preserves height. Full walls / Cutaway are visible modes, rather than an unexplained shortened model. Optional whole-home cutaway clips walls and door leaves at 1.05m; room-focused views preserve full heights. Disable Cutaway or use Walk for full-height concepts. This view setting does not alter stored geometry.
+
+## Account workspace
+
+Projects are owner-isolated; geometry and owned asset pointers are stored in PostgreSQL and raster previews in private R2. Never invent account activity, free entitlements or shared presence. A furnished template is an explicit new-project choice and uses a credit like a blank project. ₹1,499 per monthly paid period includes 10 new projects; ₹299 buys two extra creation credits. Existing projects stay editable when credits are exhausted. The full credit/payment behavior and sources belong to `UX-CONTRACT.md`, not to visual recipes.
+
+Verified authentication, optional authenticator protection for customers, mandatory session MFA for administrators, and revocable server sessions protect account access. Credentials do not belong in browser storage, source, logs or decorative examples. Reset/verification URLs are limited to their intended auth flow. Password fields support paste, password managers and accessible reveal. Admin navigation is role-aware while APIs independently authorize every protected request. Appearance never grants permission.

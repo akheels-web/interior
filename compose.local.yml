@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: forma
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run local setup first}
+      POSTGRES_DB: forma
+    ports: ["127.0.0.1:5548:5432"]
+    volumes: ["forma_pg:/var/lib/postgresql"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U forma -d forma"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  redis:
+    image: redis:8-alpine
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD:?Run local setup first}", "--maxmemory", "128mb", "--maxmemory-policy", "allkeys-lru"]
+    ports: ["127.0.0.1:6388:6379"]
+  mailpit:
+    image: axllent/mailpit:v1.29
+    ports: ["127.0.0.1:1028:1025", "127.0.0.1:8028:8025"]
+volumes:
+  forma_pg:

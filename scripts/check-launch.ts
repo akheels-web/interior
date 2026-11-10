@@ -1,0 +1,11 @@
+import {config} from 'dotenv';
+import {configurationErrors} from '../src/server/runtime-config';
+config({path:process.argv[2]||'.env.production',quiet:true});
+const errors=configurationErrors();
+for(const key of ['RAZORPAY_KEY_ID','RAZORPAY_KEY_SECRET','RAZORPAY_PLAN_ID','RAZORPAY_WEBHOOK_SECRET'])if(!process.env[key])errors.push(`${key} is required before paid launch.`);
+if(process.env.RAZORPAY_KEY_ID?.startsWith('rzp_live_')&&process.env.RAZORPAY_LIVE_APPROVED!=='true')errors.push('Live Razorpay mode has not been approved after test-mode validation.');
+if(process.env.LAUNCH_POLICIES_APPROVED!=='true')errors.push('Merchant identity, support, privacy/refund/tax policies require review before launch.');
+if(process.env.PUBLIC_INDEXING_ENABLED!=='true')errors.push('PUBLIC_INDEXING_ENABLED is disabled (appropriate for staging).');
+console.log(errors.length?'Launch configuration needs attention:':'Static launch configuration passes. Provider, restore and load tests still require separate evidence.');
+for(const error of errors)console.log(`- ${error}`);
+if(errors.length)process.exitCode=1;

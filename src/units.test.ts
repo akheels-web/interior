@@ -1,0 +1,13 @@
+import {describe,it,expect} from 'vitest';
+import {toDisplayLength,fromDisplayLength,formatArea,getUnits,lengthUnits} from './units';
+import {createProject,validateProject,createItem,suggestOpening,openingError,FLOOR_FINISHES,CATALOG} from './model';
+describe('mixed unit dimensions preserve measured geometry',()=>{
+  it('calibrates an imperial forty-foot plan without changing stored metres',()=>{expect(fromDisplayLength(40,'ft')).toBeCloseTo(12.192,8);expect(toDisplayLength(12.192,'ft')).toBeCloseTo(40,8);expect(formatArea(12.192*9.144,'ft2',0)).toBe('1,200 sq ft');});
+  for(const unit of lengthUnits)it(`roundtrips positive and negative ${unit.id} coordinates`,()=>{for(const n of [-123.456,0,.0254,12.192])expect(fromDisplayLength(toDisplayLength(n,unit.id),unit.id)).toBeCloseTo(n,9);});
+  it('keeps legacy projects compatible and preserves selected display units',()=>{const project=createProject();expect(getUnits(project)).toEqual({length:'m',area:'m2'});project.units={length:'ft',area:'ft2'};expect(validateProject(project).units).toEqual(project.units);expect(validateProject(project).rooms).toEqual(project.rooms);});
+  it('rejects falsey or malformed provided unit preferences',()=>{for(const units of [false,0,'',null,[],true]){const p=createProject();(p as any).units=units;expect(()=>validateProject(p)).toThrow();}});
+  it('rejects invented units and out of bounds appliance and door controls',()=>{for(const mutate of [(p:any)=>p.units={length:'sqft',area:'ft2'},(p:any)=>p.items[0].powerLevel=101,(p:any)=>p.items[0].airflowAngle=Infinity,(p:any)=>p.rooms[0].openings[1].swing=180,(p:any)=>p.rooms[0].openings[1].doorStyle='script']){const p=createProject();mutate(p);expect(()=>validateProject(p)).toThrow();}});
+  it('supports every floor and all expanded appliance kinds in editable exports',()=>{for(const floor of FLOOR_FINISHES){const p=createProject();p.rooms[0].floor=floor.id;p.items=CATALOG.map(c=>createItem(c.kind,p.rooms[0]));expect(validateProject(p).items).toHaveLength(43);}});
+  it('prevents openings on an open-plan edge and never suggests one there',()=>{const p=createProject(),r=p.rooms[0];r.openings=[];r.openEdges=[0,1,2];const opening=suggestOpening(r,'door');expect(opening?.edge).toBe(3);r.openings=[opening!];r.openEdges.push(3);expect(openingError(r)).toMatch(/open boundary/i);expect(()=>validateProject(p)).toThrow();});
+  it('validates duplicate opening IDs and invalid open boundary indexes',()=>{const p=createProject();p.rooms[0].openings[1].id=p.rooms[0].openings[0].id;expect(()=>validateProject(p)).toThrow();const q=createProject();q.rooms[0].openEdges=[99];expect(()=>validateProject(q)).toThrow();});
+});

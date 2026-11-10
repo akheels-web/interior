@@ -1,0 +1,11 @@
+{
+  "profile": "product-admin",
+  "sourceRoots": ["src"],
+  "locale": "en-IN",
+  "canonicalMap": "UX-CONTRACT.md",
+  "requiredCapabilities": ["Select/Listbox", "Form", "Scrollbar", "Toast", "CRUD"],
+  "ownership": {"Select/Listbox": "native"},
+  "requiredCommands": ["typecheck", "unit", "build"],
+  "commands": {"typecheck":"npm run typecheck","unit":"npm test","build":"npm run build"},
+  "evidence": {"failurePaths":"src/model.test.ts","geometry":"src/planGeometry.test.ts"}
+}

@@ -1,0 +1,1 @@
+export function Brand(){return <a className="ps-brand pf-brand" href="/" aria-label="PlanSaathi home"><img src="/brand/plansaathi-lockup.svg" width="194" height="40" alt="PlanSaathi" fetchPriority="high"/></a>;}

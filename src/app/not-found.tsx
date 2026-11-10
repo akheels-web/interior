@@ -1,0 +1,1 @@
+export default function NotFound(){return <main className="studio-loading"><h1>That space isn’t here.</h1><p>Open your workspace to find your saved projects.</p><a className="button primary" href="/dashboard">Back to projects</a></main>;}

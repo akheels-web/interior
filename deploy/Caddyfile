@@ -1,0 +1,16 @@
+{
+  admin off
+}
+
+{$DOMAIN} {
+  encode zstd gzip
+  request_body {
+    max_size 10MB
+  }
+  @operations path /api/ops/*
+  respond @operations 404
+  reverse_proxy app:3000 {
+    # Start with DNS-only Cloudflare records. See OPERATIONS.md before enabling its proxy.
+    header_up X-Real-IP {remote_host}
+  }
+}

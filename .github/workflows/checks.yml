@@ -1,0 +1,58 @@
+name: Launch checks
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 4 * * 1'
+permissions: { contents: read }
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DATABASE_URL: postgresql://test:synthetic-ci-only@127.0.0.1:5432/forma_test
+      TEST_DATABASE_URL: postgresql://test:synthetic-ci-only@127.0.0.1:5432/forma_test
+      APP_URL: http://127.0.0.1:3000
+      BETTER_AUTH_URL: http://127.0.0.1:3000
+      BETTER_AUTH_SECRET: ci-only-synthetic-placeholder-not-a-production-secret-00000000
+      LOCAL_DEVELOPMENT: "true"
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with: { node-version: 24, cache: npm }
+      - run: docker build -t plansaathi-db:ci deploy/postgres
+      - name: Start isolated patched test database
+        shell: bash
+        run: |
+          docker run --detach --name plansaathi-ci-db \
+            -e POSTGRES_DB=forma_test -e POSTGRES_USER=test -e POSTGRES_PASSWORD=synthetic-ci-only \
+            -p 127.0.0.1:5432:5432 plansaathi-db:ci
+          for attempt in {1..30}; do
+            if docker exec plansaathi-ci-db pg_isready -U test -d forma_test; then exit 0; fi
+            sleep 1
+          done
+          docker logs plansaathi-ci-db
+          exit 1
+      - run: npm ci
+      - run: npm audit --audit-level=moderate
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: docker build --target app -t plansaathi-app:ci .
+      - run: docker build -t plansaathi-proxy:ci deploy/proxy
+      - name: Reject fixable medium or higher image advisories
+        shell: bash
+        run: |
+          for part in app db proxy; do
+            archive="$RUNNER_TEMP/plansaathi-$part.tar"
+            docker image save --output "$archive" "plansaathi-$part:ci"
+            docker run --rm --read-only --cap-drop ALL --security-opt no-new-privileges:true \
+              --mount source=plansaathi-ci-scan-cache,target=/cache \
+              --mount source=plansaathi-ci-scan-tmp,target=/tmp \
+              --mount "type=bind,source=$archive,target=/scan/image.tar,readonly" \
+              -e GRYPE_DB_CACHE_DIR=/cache \
+              anchore/grype@sha256:621d56d1d68106b787022c81546f7e0a36202a25d1239f0c20195fab8c16f7ea \
+              docker-archive:/scan/image.tar --only-fixed --fail-on medium -o table
+          done
