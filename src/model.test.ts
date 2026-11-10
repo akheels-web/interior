@@ -1,8 +1,23 @@
 import { describe,it,expect } from 'vitest';
-import { area,bounds,createProject,createItem,itemFootprint,openingError,overlaps,resizeRoom,suggestOpening,validateProject } from './model';
+import { area,bounds,createProject,createItem,getBrandsForKind,getItemPrice,itemFootprint,openingError,overlaps,resizeRoom,suggestOpening,validateProject } from './model';
 import type { Room } from './model';
 describe('project geometry and safe import',()=>{
   it('round-trips the furnished sample without changing its geometry',()=>{const p=createProject();expect(validateProject(JSON.parse(JSON.stringify(p)))).toEqual(p);expect(area(p.rooms[0].points)).toBeCloseTo(42.92);});
+  it('validates deep item and room customizations for switches, sofas, brands, and architectural finishes',()=>{
+    const p=createProject();
+    p.rooms[0]={...p.rooms[0],wallTexture:'wainscoting',wallBrand:'Asian Paints — Royale Glitz',ceilingStyle:'cove',accentWallEdge:1,accentWallColor:'#586457',skirtingColor:'#e8e3d9'};
+    const sofa=p.items.find(i=>i.kind==='sofa')!;
+    Object.assign(sofa,{sofaType:'curved',fabric:'boucle',armStyle:'tuxedo',legStyle:'brass-stiletto',cushionCount:4,brand:'Roche Bobois',modelCode:'Bubble Curved',accentColor:'#c5a059',specNote:'Italian stain-guard bouclé'});
+    const socket=p.items.find(i=>i.kind==='socket')!;
+    Object.assign(socket,{switchGang:'touch',switchPlate:'glass',brand:'Legrand',modelCode:'Arteor',color:'#26292c',accentColor:'#c8ad7e',unitPrice:6200});
+    const validated=validateProject(JSON.parse(JSON.stringify(p)));
+    expect(validated.rooms[0].ceilingStyle).toBe('cove');
+    expect(validated.items.find(i=>i.kind==='sofa')?.sofaType).toBe('curved');
+    expect(validated.items.find(i=>i.kind==='socket')?.switchGang).toBe('touch');
+    expect(getBrandsForKind('socket')[0].brand).toBe('Legrand');
+    expect(getItemPrice(socket)).toBe(6200);
+    expect(getItemPrice(sofa)).toBeGreaterThan(95000);
+  });
   it('handles a concave floor and reversed winding consistently',()=>{const points=[{x:0,z:0},{x:4,z:0},{x:4,z:2},{x:2,z:2},{x:2,z:4},{x:0,z:4}];expect(area(points)).toBe(12);expect(area([...points].reverse())).toBe(12);});
   it('resizes around the room centre, preserving its shape proportions',()=>{const r=createProject().rooms[0];const moved={...r,points:r.points.map(p=>({x:p.x+20,z:p.z+15}))};const next=resizeRoom(moved,10,8);expect(bounds(next.points)).toMatchObject({x:20,z:15,width:10,depth:8});expect(area(next.points)).toBeCloseTo(80);});
   it('uses rotated footprints when reporting furniture overlaps',()=>{const room=createProject().rooms[0];const a={...createItem('sofa',room),x:0,z:0,width:3,depth:1,rotation:90};const b={...createItem('armchair',room),x:0,z:1.5};expect(itemFootprint(a).width).toBeCloseTo(1);expect(overlaps([a,b])).toHaveLength(1);expect(overlaps([{...a,rotation:0},b])).toHaveLength(0);});

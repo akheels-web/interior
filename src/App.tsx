@@ -1,6 +1,6 @@
 'use client';
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState, lazy, Suspense, type ReactNode } from 'react';
-import { Armchair, ArrowDownToLine, ArrowLeft, ArrowUpRight, Box, Check, CheckCheck, ChevronDown, ChevronRight, CircleHelp, Copy, DoorOpen, Download, Fan, FileJson, FilePlus2, FileUp, Footprints, Grid2X2, Layers3, Lightbulb, LockKeyhole, Maximize, MousePointer2, Move, Orbit, Paintbrush, Play, Plug, Plus, Redo2, RotateCw, Ruler, Search, ShieldAlert, SlidersHorizontal, Snowflake, Sofa, Sun, PencilRuler, Trash2, Undo2, UnlockKeyhole, Wind, X, ZoomIn, ZoomOut } from 'lucide-react';
+import { Armchair, ArrowDownToLine, ArrowLeft, ArrowUpRight, Box, Check, CheckCheck, ChevronDown, ChevronRight, CircleHelp, ClipboardList, Copy, DoorOpen, Download, Fan, FileJson, FilePlus2, FileUp, Footprints, Grid2X2, Layers3, Lightbulb, LockKeyhole, Maximize, MousePointer2, Move, Orbit, Paintbrush, Play, Plug, Plus, Redo2, RotateCw, Ruler, Search, ShieldAlert, SlidersHorizontal, Snowflake, Sofa, Sparkles, Sun, PencilRuler, Trash2, Undo2, UnlockKeyhole, Wind, X, ZoomIn, ZoomOut } from 'lucide-react';
 import Viewport, { type ViewportHandle } from './Viewport';
 const PdfPlanner=lazy(()=>import('./PdfPlanner'));
 const SketchPlanner=lazy(()=>import('./SketchPlanner'));
@@ -8,9 +8,9 @@ import {useCloudSave} from './useCloudSave';
 import {useDraftNavigation} from './useDraftNavigation';
 import AirflowControls from './AirflowControls';
 import {readViewPreferences,writeViewPreferences} from './viewPreferences';
-import {SofaControls,WallTextureControl} from './FinishControls';
+import {BrandAndSpecControls,SofaControls,SwitchControls,WallTextureControl} from './FinishControls';
 import { exportPresentation } from './export';
-import { area, bounds, CATALOG, clamp, COLORS, createItem, createProject, defaultSettings, DEVICE_WATTS, download, FLOOR_FINISHES, id, inside, MATERIALS, openingError, overlaps, resizeRoom, round, suggestOpening, SYSTEM_KINDS, validateProject, WALL_COLORS, type Finish, type Item, type Kind, type Material, type Opening, type Project, type Room, type Settings, type SourcePlan } from './model';
+import { ACCENT_COLORS, area, bounds, CATALOG, CEILING_STYLES, clamp, COLORS, createItem, defaultSettings, DEVICE_WATTS, download, FABRIC_STYLES, FLOOR_FINISHES, getBrandsForKind, getItemPrice, id, inside, MATERIALS, openingError, overlaps, resizeRoom, round, SOFA_SHAPES, suggestOpening, SWITCH_COLORS, SWITCH_GANGS, SWITCH_PLATES, SYSTEM_KINDS, validateProject, WALL_COLORS, WALL_TEXTURES, type Finish, type Item, type Kind, type LightingMood, type Material, type Opening, type Project, type Room, type Settings, type SourcePlan } from './model';
 import { ColorSwatches, Dialog, MeasurementProvider, NumberField, Toggle } from './ui';
 import { areaUnits, formatArea, formatLength, getUnits, lengthUnits, type AreaUnit, type LengthUnit, type UnitsConfig } from './units';
 import { DeviceOperation, isAirConditioner, OpeningEditor, PowerButton, RoomOutlineEditor } from './EditorControls';
@@ -29,6 +29,12 @@ const materialNames=MATERIALS;
 const finishNames=FLOOR_FINISHES;
 const systemKinds=SYSTEM_KINDS;
 const watts=DEVICE_WATTS;
+const lightingMoods:{id:LightingMood;label:string;note:string}[]=[
+  {id:'studio',label:'Studio Day',note:'Balanced natural daylight'},
+  {id:'golden',label:'Golden Hour',note:'Warm late-afternoon sun'},
+  {id:'evening',label:'Evening Lounge',note:'Soft dusk with warm interior glow'},
+  {id:'gallery',label:'Gallery Crisp',note:'High-clarity architectural light'},
+];
 function IconButton({label,children,onClick,disabled=false,active=false,className=''}:{label:string;children:ReactNode;onClick:()=>void;disabled?:boolean;active?:boolean;className?:string}){return <button className={`icon-button ${active?'active':''} ${className}`} aria-label={label} title={label} onClick={onClick} disabled={disabled}>{children}</button>;}
 function Section({title,children,action}:{title:string;children:ReactNode;action?:ReactNode}){return <section className="inspector-section"><div className="section-title"><h3>{title}</h3>{action}</div>{children}</section>;}
 function ItemIcon({kind,size=17}:{kind:Kind;size?:number}){if(['ac','tower-ac','cassette-ac'].includes(kind))return <Snowflake size={size}/>;if(kind==='ceiling-fan')return <Fan size={size}/>;if(kind==='socket')return <Plug size={size}/>;if(['pendant','floor-lamp','wall-light','ceiling-light','spotlight','tube-light','cfl'].includes(kind))return <Lightbulb size={size}/>;if(kind==='sofa')return <Sofa size={size}/>;if(kind==='armchair'||kind==='dining-chair')return <Armchair size={size}/>;return <Box size={size}/>;}
@@ -78,7 +84,7 @@ export default function App({initialProject,initialRevision,onBack,onCreateProje
   const [selectedId,setSelectedId]=useState<string|null>(boot.project.items.find(i=>i.kind==='sofa')?.id??null);
   const [inspectorTab,setInspectorTab]=useState<'object'|'room'|'scene'>('object');
   const [libraryTab,setLibraryTab]=useState<'furniture'|'finishes'|'systems'>('furniture');const [category,setCategory]=useState('All');const [search,setSearch]=useState('');const searchRef=useRef<HTMLInputElement>(null);
-  const [mobilePanel,setMobilePanel]=useState<'library'|'inspector'|null>(null);const [mode,setMode]=useState<'design'|'systems'>('design');const [environmentOpen,setEnvironmentOpen]=useState(false);
+  const [mobilePanel,setMobilePanel]=useState<'library'|'inspector'|null>(null);const [mode,setMode]=useState<'design'|'systems'>('design');const [environmentOpen,setEnvironmentOpen]=useState(false);const [specsOpen,setSpecsOpen]=useState(false);
   const [dialog,setDialog]=useState<'files'|'project'|'new'|'help'|'import'|'leave'|null>(null);const [pdfOpen,setPdfOpen]=useState(false);const [sketchOpen,setSketchOpen]=useState(false);const [sketchFromScratch,setSketchFromScratch]=useState(false);
   useEffect(()=>{const url=new URL(window.location.href);if(url.searchParams.get('sketch')==='1'){setSketchFromScratch(true);setSketchOpen(true);url.searchParams.delete('sketch');}else if(url.searchParams.get('import')==='1'){setPdfOpen(true);url.searchParams.delete('import');}window.history.replaceState(null,'',url);},[]);
   const [pendingImport,setPendingImport]=useState<Project|null>(null);
@@ -88,6 +94,7 @@ export default function App({initialProject,initialRevision,onBack,onCreateProje
   useEffect(()=>{if(saveState==='conflict')setConflictHidden(false);},[saveState]);
   const leaveEditor=useDraftNavigation(initialProject.id,saveState,()=>setDialog('leave'),onBack);
   const room=project.rooms.find(r=>r.id===settings.roomId)??project.rooms[0];const selected=project.items.find(i=>i.id===selectedId);const roomItems=project.items.filter(i=>i.roomId===room.id);const roomBounds=bounds(room.points);const collisions=useMemo(()=>overlaps(project.items),[project.items]);
+  const totalBudget=useMemo(()=>project.items.reduce((sum,item)=>sum+getItemPrice(item),0),[project.items]);
   const announce=useCallback((message:string)=>setToast(message),[]);
   useEffect(()=>{if(!toast)return;const timer=setTimeout(()=>setToast(''),5200);return()=>clearTimeout(timer);},[toast]);
   useEffect(()=>{document.title=`${project.name} · PlanSaathi`;},[project.name]);
@@ -99,7 +106,7 @@ export default function App({initialProject,initialRevision,onBack,onCreateProje
   const changeSetting=<K extends keyof Settings>(key:K,value:Settings[K])=>setSettings(s=>({...s,[key]:value}));
   useEffect(()=>{const guard=(e:BeforeUnloadEvent)=>{if(saveState!=='saved'){e.preventDefault();e.returnValue='';}};window.addEventListener('beforeunload',guard);return()=>window.removeEventListener('beforeunload',guard);},[saveState]);
   const removeSelected=useCallback(()=>{if(!selected||selected.locked)return;commit({...project,items:project.items.filter(i=>i.id!==selected.id)});setSelectedId(null);announce(`${selected.name} removed. Undo is available.`);},[selected,project,commit,announce]);
-  useEffect(()=>{const keyboard=(e:KeyboardEvent)=>{if(e.isComposing)return;const target=e.target as HTMLElement;if(target.closest('input,textarea,select,[contenteditable="true"],dialog'))return;if(e.key==='Escape'){setSettings(s=>({...s,presenting:false}));setMobilePanel(null);}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();dispatch({type:e.shiftKey?'redo':'undo'});}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='y'){e.preventDefault();dispatch({type:'redo'});}if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();removeSelected();}};window.addEventListener('keydown',keyboard);return()=>window.removeEventListener('keydown',keyboard);},[removeSelected]);
+  useEffect(()=>{const keyboard=(e:KeyboardEvent)=>{if(e.isComposing)return;const target=e.target as HTMLElement;if(target.closest('input,textarea,select,[contenteditable="true"],dialog'))return;if(e.key==='Escape'){setSettings(s=>({...s,presenting:false}));setMobilePanel(null);setSpecsOpen(false);}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();dispatch({type:e.shiftKey?'redo':'undo'});}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='y'){e.preventDefault();dispatch({type:'redo'});}if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();removeSelected();}};window.addEventListener('keydown',keyboard);return()=>window.removeEventListener('keydown',keyboard);},[removeSelected]);
   const chooseItem=(itemId:string|null)=>{setSelectedId(itemId);if(itemId){const item=project.items.find(i=>i.id===itemId);if(item)changeSetting('roomId',item.roomId);setInspectorTab('object');}};
   const addItem=(kind:Kind)=>{if(project.items.length>=300){announce('This project supports up to 300 objects. Remove an object before adding another.');return;}const item=createItem(kind,room);commit({...project,items:[...project.items,item]});chooseItem(item.id);setInspectorTab('object');announce(`${item.name} added. Drag it in the view or enter its position.`);};
   const duplicate=()=>{if(!selected)return;if(project.items.length>=300){announce('This project supports up to 300 objects.');return;}const x=round(clamp(selected.x+.3,-150,150)),z=round(clamp(selected.z+.3,-150,150));const targetRoom=project.rooms.find(r=>inside({x,z},r.points));const copy={...selected,id:id(),name:`${selected.name.replace(/ copy$/,'').slice(0,115)} copy`,x,z,roomId:targetRoom?.id??selected.roomId,locked:false};if(!commit({...project,items:[...project.items,copy]}))return;setSelectedId(copy.id);announce('Object duplicated.');};
@@ -126,7 +133,7 @@ export default function App({initialProject,initialRevision,onBack,onCreateProje
       <button className="project-heading" onClick={openProject}><span className="project-name">{project.name}<ChevronDown size={13}/></span><span className="project-client">{project.client||'Add client details'}</span></button>
       <span className={`save-status ${saveState==='error'||saveState==='conflict'?'save-warning':''}`}><span className="status-dot"/>{saveState==='saved'?'Saved to your account':saveState==='saving'?'Saving your project…':saveState==='conflict'?'Another device has changes':'Project save needs attention'}</span>
       <div className="measurement-selectors"><label><span>Length</span><select aria-label="Length measurement unit" value={units.length} onChange={e=>commit({...project,units:{...units,length:e.target.value as LengthUnit}})}>{lengthUnits.map(unit=><option key={unit.id} value={unit.id}>{unit.symbol}</option>)}</select></label><label><span>Area</span><select aria-label="Area measurement unit" value={units.area} onChange={e=>commit({...project,units:{...units,area:e.target.value as AreaUnit}})}>{areaUnits.map(unit=><option key={unit.id} value={unit.id}>{unit.symbol}</option>)}</select></label></div>
-      <div className="header-actions">{settings.presenting?<button className="button secondary" onClick={()=>changeSetting('presenting',false)}><ArrowLeft size={15}/>Exit presentation</button>:<><button className="button ghost file-action" onClick={()=>{setFileError('');setDialog('files');}}>File<ChevronDown size={13}/></button><button className="button secondary present-action" onClick={()=>{setMobilePanel(null);changeSetting('presenting',true);}}><Play size={14}/>Present</button></>}<button className="button primary export-button" onClick={exportPdf} disabled={exportBusy} aria-busy={exportBusy}><ArrowDownToLine size={15}/><span>{exportBusy?'Preparing PDF…':'Export PDF'}</span></button></div>
+      <div className="header-actions"><button className="button ghost specs-action" onClick={()=>setSpecsOpen(true)} title="Open Material Board & BOQ Schedule"><ClipboardList size={15}/><span>Specs &amp; BOQ</span></button>{settings.presenting?<button className="button secondary" onClick={()=>changeSetting('presenting',false)}><ArrowLeft size={15}/>Exit presentation</button>:<><button className="button ghost file-action" onClick={()=>{setFileError('');setDialog('files');}}>File<ChevronDown size={13}/></button><button className="button secondary present-action" onClick={()=>{setMobilePanel(null);changeSetting('presenting',true);}}><Play size={14}/>Present</button></>}<button className="button primary export-button" onClick={exportPdf} disabled={exportBusy} aria-busy={exportBusy}><ArrowDownToLine size={15}/><span>{exportBusy?'Preparing PDF…':'Export PDF'}</span></button></div>
     </header>
     {saveState==='error'&&<div className="recovery-banner"><ShieldAlert size={16}/><span>{saveError}</span><button onClick={exportJson}>Download backup</button><button onClick={()=>saveNow()}>Save this copy</button></div>}
     {saveState==='conflict'&&<div className="recovery-banner"><ShieldAlert size={16}/><span>This project changed on another device. Automatic saving is paused so you can choose which version to keep.</span><button onClick={exportJson}>Download my work</button><button onClick={()=>setConflictHidden(false)}>Review copies</button></div>}
@@ -158,9 +165,104 @@ export default function App({initialProject,initialRevision,onBack,onCreateProje
         <div className="scene-corner-label"><span className="mini-compass" aria-hidden="true">N<i/></span><span>{settings.camera==='top'?'Floor plan':settings.camera==='walk'?'Walk-through':'Perspective'}<small>{settings.camera==='orbit'?'Drag to orbit · Scroll to zoom':settings.camera==='top'?'Drag an object to reposition':'Drag to look · Focus view + WASD to move'}</small></span></div>
         <div className="view-controls"><IconButton label="Zoom in" onClick={()=>viewport.current?.zoom(1)}><ZoomIn size={17}/></IconButton><IconButton label="Zoom out" onClick={()=>viewport.current?.zoom(-1)}><ZoomOut size={17}/></IconButton><span/><IconButton label="Fit room to view" onClick={()=>viewport.current?.fit()}><Maximize size={17}/></IconButton><IconButton label="Download current view as PNG" onClick={exportPng}><Download size={17}/></IconButton></div>
         
-        {settings.presenting&&<div className="presentation-caption"><span>DESIGN CONCEPT</span><h1>{project.name}</h1><p>{project.client}</p></div>}
+        {settings.presenting&&(
+          <>
+            <div className="presentation-caption">
+              <span>DESIGN CONCEPT · {settings.wholeHome?'WHOLE HOME':room.name.toUpperCase()}</span>
+              <h1>{project.name}</h1>
+              <p>{project.client||'Bespoke Interior Presentation'} · Est. ₹{totalBudget.toLocaleString('en-IN')}</p>
+              <div className="presentation-quick-bar">
+                <div className="presentation-mood-pills" role="group" aria-label="Lighting mood">
+                  {lightingMoods.map(m=>(
+                    <button key={m.id} type="button" className={(settings.mood??'studio')===m.id?'active':''} onClick={()=>changeSetting('mood',m.id)} title={m.note}>
+                      <Sparkles size={12}/><span>{m.label}</span>
+                    </button>
+                  ))}
+                </div>
+                <button type="button" className="presentation-boq-btn" onClick={()=>setSpecsOpen(true)}>
+                  <ClipboardList size={13}/><span>Material &amp; BOQ Board</span>
+                </button>
+              </div>
+            </div>
+            {selected&&(
+              <aside className="presentation-spec-card" aria-label="Selected item specification">
+                <div className="presentation-spec-header">
+                  <span className="selected-object-icon"><ItemIcon kind={selected.kind} size={18}/></span>
+                  <div>
+                    <strong>{selected.name}</strong>
+                    <small>{selected.brand??getBrandsForKind(selected.kind)[0]?.brand} · {selected.modelCode??getBrandsForKind(selected.kind)[0]?.series[0]} · ₹{getItemPrice(selected).toLocaleString('en-IN')}</small>
+                  </div>
+                  <IconButton label="Close specification card" onClick={()=>chooseItem(null)}><X size={14}/></IconButton>
+                </div>
+                <div className="presentation-spec-body">
+                  <div className="presentation-live-row">
+                    <span>Brand</span>
+                    <div className="mini-pills">
+                      {getBrandsForKind(selected.kind).slice(0,4).map(b=>(
+                        <button key={b.brand} type="button" className={(selected.brand??getBrandsForKind(selected.kind)[0]?.brand)===b.brand?'selected':''} onClick={()=>changeItem({brand:b.brand,modelCode:b.series[0]})}>
+                          {b.brand}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  {selected.kind==='sofa'&&(
+                    <div className="presentation-live-row">
+                      <span>Shape &amp; Cloth</span>
+                      <div className="mini-pills">
+                        {SOFA_SHAPES.map(s=>(
+                          <button key={s.value} type="button" className={(selected.sofaType??'three-seater')===s.value?'selected':''} onClick={()=>changeItem({sofaType:s.value})}>
+                            {s.label}
+                          </button>
+                        ))}
+                      </div>
+                      <div className="mini-pills">
+                        {FABRIC_STYLES.map(f=>(
+                          <button key={f.value} type="button" className={(selected.fabric??'plain')===f.value?'selected':''} onClick={()=>changeItem({fabric:f.value})}>
+                            {f.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {selected.kind==='socket'&&(
+                    <div className="presentation-live-row">
+                      <span>Switch Module &amp; Plate</span>
+                      <div className="mini-pills">
+                        {SWITCH_GANGS.map(g=>(
+                          <button key={g.value} type="button" className={(selected.switchGang??'4M')===g.value?'selected':''} onClick={()=>changeItem({switchGang:g.value})}>
+                            {g.value.toUpperCase()}
+                          </button>
+                        ))}
+                      </div>
+                      <div className="mini-pills">
+                        {SWITCH_PLATES.map(p=>(
+                          <button key={p.value} type="button" className={(selected.switchPlate??'matte')===p.value?'selected':''} onClick={()=>changeItem({switchPlate:p.value})}>
+                            {p.label.split(' ')[0]}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  <div className="presentation-live-row">
+                    <span>Finish &amp; Accent</span>
+                    <div className="swatches compact">
+                      {(selected.kind==='socket'?SWITCH_COLORS:COLORS.map(hex=>({name:hex,hex}))).map(c=>(
+                        <button key={c.hex} type="button" className={`swatch ${selected.color.toLowerCase()===c.hex.toLowerCase()?'selected':''}`} style={{background:c.hex}} title={c.name} onClick={()=>changeItem({color:c.hex})}/>
+                      ))}
+                    </div>
+                    <div className="swatches compact">
+                      {ACCENT_COLORS.map(c=>(
+                        <button key={c.hex} type="button" className={`swatch ${(selected.accentColor??'').toLowerCase()===c.hex.toLowerCase()?'selected':''}`} style={{background:c.hex}} title={`Accent: ${c.name}`} onClick={()=>changeItem({accentColor:c.hex})}/>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </aside>
+            )}
+          </>
+        )}
         <div className="scene-bottom-bar"><div className="scene-toggles"><button className={settings.showGrid?'active':''} aria-pressed={settings.showGrid} onClick={()=>changeSetting('showGrid',!settings.showGrid)}><Grid2X2 size={14}/><span>Grid</span></button><button className={settings.showDimensions?'active':''} aria-pressed={settings.showDimensions} onClick={()=>changeSetting('showDimensions',!settings.showDimensions)}><Ruler size={14}/><span>Dimensions</span></button><button className={settings.showWalls?'active':''} aria-pressed={settings.showWalls} onClick={()=>changeSetting('showWalls',!settings.showWalls)}><DoorOpen size={14}/><span>Walls</span></button><button className={settings.snap?'active':''} aria-pressed={settings.snap} onClick={()=>changeSetting('snap',!settings.snap)}><Move size={14}/><span>Snap</span></button></div><button className="environment-button" aria-expanded={settings.presenting?environmentOpen:undefined} onClick={()=>{if(settings.presenting)setEnvironmentOpen(!environmentOpen);else{setInspectorTab('scene');setMobilePanel('inspector');}}}><Sun size={15}/><span>Daylight {settings.daylight}%</span><SlidersHorizontal size={13}/></button></div>
-        {settings.presenting&&environmentOpen&&<section className="environment-popover" aria-label="Presentation environment"><h3>Environment</h3><IconButton label="Close environment controls" onClick={()=>setEnvironmentOpen(false)}><X size={14}/></IconButton><label className="range-field"><span>Daylight <strong>{settings.daylight}%</strong></span><input type="range" min="0" max="100" value={settings.daylight} onChange={e=>changeSetting('daylight',Number(e.target.value))}/></label><Toggle label="Interior lights" checked={settings.lights} onChange={value=>changeSetting('lights',value)}/><Toggle label="Airflow illustration" checked={settings.airflow} onChange={value=>changeSetting('airflow',value)}/><Toggle label="Cutaway walls" checked={settings.cutaway} onChange={value=>changeSetting('cutaway',value)}/>{!settings.cutaway&&<Toggle label="See through foreground walls" checked={settings.ghostWalls} onChange={value=>changeSetting('ghostWalls',value)}/>}<Toggle label="Whole-home view" checked={settings.wholeHome} onChange={value=>changeSetting('wholeHome',value)}/></section>}
+        {settings.presenting&&environmentOpen&&<section className="environment-popover" aria-label="Presentation environment"><h3>Environment</h3><IconButton label="Close environment controls" onClick={()=>setEnvironmentOpen(false)}><X size={14}/></IconButton><label className="field"><span>Lighting mood</span><select value={settings.mood??'studio'} onChange={e=>changeSetting('mood',e.target.value as LightingMood)}>{lightingMoods.map(m=><option key={m.id} value={m.id}>{m.label} — {m.note}</option>)}</select></label><label className="range-field"><span>Daylight <strong>{settings.daylight}%</strong></span><input type="range" min="0" max="100" value={settings.daylight} onChange={e=>changeSetting('daylight',Number(e.target.value))}/></label><Toggle label="Interior lights" checked={settings.lights} onChange={value=>changeSetting('lights',value)}/><Toggle label="Airflow illustration" checked={settings.airflow} onChange={value=>changeSetting('airflow',value)}/><Toggle label="Cutaway walls" checked={settings.cutaway} onChange={value=>changeSetting('cutaway',value)}/>{!settings.cutaway&&<Toggle label="See through foreground walls" checked={settings.ghostWalls} onChange={value=>changeSetting('ghostWalls',value)}/>}<Toggle label="Whole-home view" checked={settings.wholeHome} onChange={value=>changeSetting('wholeHome',value)}/></section>}
       </section>
 
       {!settings.presenting&&<aside className={`inspector-panel ${mobilePanel==='inspector'?'mobile-open':''}`} aria-label="Properties inspector">
@@ -172,20 +274,108 @@ export default function App({initialProject,initialRevision,onBack,onCreateProje
             <Section title="Object"><label className="field"><span>Name</span><input value={selected.name} maxLength={120} onChange={e=>{if(e.target.value.trim())changeItem({name:e.target.value});}}/></label><label className="field"><span>Swap object</span><select value={selected.kind} disabled={selected.locked} onChange={e=>{const fresh=createItem(e.target.value as Kind,room);changeItem({kind:fresh.kind,name:fresh.name,width:fresh.width,depth:fresh.depth,height:fresh.height,color:fresh.color,material:fresh.material,variant:0,y:fresh.y});}}>{CATALOG.map(c=><option key={c.kind} value={c.kind}>{c.name}</option>)}</select></label></Section>
             {systemKinds.includes(selected.kind)&&<Section title="Operation"><DeviceOperation item={selected} onChange={changeItem}/><p className="helper-text">{selected.kind==='socket'?'Outlet placement is schematic. No circuit or wiring is inferred.':'Switch state is included in the scene and approximate load schedule.'}</p></Section>}
             <Section title="Transform" action={<span className="section-meta">{units.length.toUpperCase()}</span>}>{selected.locked&&<p className="helper-text lock-note"><LockKeyhole size={13}/>Unlock this object to edit its transform.</p>}<fieldset className="transform-fieldset" disabled={selected.locked}><legend className="sr-only">Object transform</legend><div className="form-grid three"><NumberField label="Position X" value={selected.x} onChange={x=>changeItem({x},true)}/><NumberField label="Position Y" value={selected.y} min={0} max={6} onChange={y=>changeItem({y},true)}/><NumberField label="Position Z" value={selected.z} onChange={z=>changeItem({z},true)}/></div><div className="form-grid three"><NumberField label="Width" value={selected.width} min={.05} max={12} onChange={width=>changeItem({width},true)}/><NumberField label="Depth" value={selected.depth} min={.02} max={12} onChange={depth=>changeItem({depth},true)}/><NumberField label="Height" value={selected.height} min={.01} max={6} onChange={height=>changeItem({height},true)}/></div><div className="rotation-row"><NumberField label="Rotation" value={selected.rotation} min={-3600} max={3600} step={15} unit="°" onChange={rotation=>changeItem({rotation},true)}/><button className="button secondary rotate-button" onClick={()=>changeItem({rotation:round((selected.rotation+90)%360)})}><RotateCw size={14}/>90°</button></div></fieldset></Section>
-            <Section title="Appearance">{selected.kind==='sofa'&&<SofaControls item={selected} onChange={changeItem}/>}<label className="field"><span>Material</span><select value={selected.material} onChange={e=>changeItem({material:e.target.value as Material})}>{materialNames.map(m=><option key={m} value={m}>{m.charAt(0).toUpperCase()+m.slice(1)}</option>)}</select></label><ColorSwatches label="Colour" value={selected.color} colors={COLORS} onChange={color=>changeItem({color})}/><fieldset className="variant-field"><legend>Design variant</legend><div className="variant-options">{[0,1,2].map(variant=><button key={variant} className={selected.variant===variant?'selected':''} aria-pressed={selected.variant===variant} onClick={()=>changeItem({variant})}><span className={`variant-drawing variant-${variant}`} style={{backgroundColor:selected.color}}/><span>{['Classic','Soft','Linear'][variant]}</span>{selected.variant===variant&&<Check size={11}/>}</button>)}</div></fieldset></Section>
-            
+            <Section title="Appearance">
+              {['sofa','armchair','bed','single-bed','dining-chair'].includes(selected.kind)&&<SofaControls item={selected} onChange={changeItem}/>}
+              {selected.kind==='socket'&&<SwitchControls item={selected} onChange={changeItem}/>}
+              <label className="field"><span>Material</span><select value={selected.material} onChange={e=>changeItem({material:e.target.value as Material})}>{materialNames.map(m=><option key={m} value={m}>{m.charAt(0).toUpperCase()+m.slice(1)}</option>)}</select></label>
+              <ColorSwatches label="Colour" value={selected.color} colors={COLORS} onChange={color=>changeItem({color})}/>
+              <fieldset className="variant-field"><legend>Design variant</legend><div className="variant-options">{[0,1,2].map(variant=><button key={variant} className={selected.variant===variant?'selected':''} aria-pressed={selected.variant===variant} onClick={()=>changeItem({variant})}><span className={`variant-drawing variant-${variant}`} style={{backgroundColor:selected.color}}/><span>{['Classic','Soft','Linear'][variant]}</span>{selected.variant===variant&&<Check size={11}/>}</button>)}</div></fieldset>
+            </Section>
+            <Section title="Brand & Custom Specs" action={<span className="section-meta">BOQ</span>}>
+              <BrandAndSpecControls item={selected} onChange={changeItem}/>
+            </Section>
             <Section title="Object actions"><div className="object-action-buttons"><button className="button secondary" onClick={duplicate}><Copy size={14}/>Duplicate</button><button className="button secondary" onClick={()=>changeItem({locked:!selected.locked})}>{selected.locked?<UnlockKeyhole size={14}/>:<LockKeyhole size={14}/>} {selected.locked?'Unlock':'Lock'}</button></div><button className="button danger delete-object" disabled={selected.locked} onClick={removeSelected}><Trash2 size={14}/>Remove object</button><p className="helper-text">Changes can be undone with Ctrl / ⌘ Z.</p></Section>
           </>:<div className="inspector-empty"><MousePointer2 size={25}/><h3>Select an object</h3><p>Choose furniture in the room or project list to edit its dimensions, finish and position.</p><button className="button secondary" onClick={()=>setInspectorTab('room')}>Edit room instead</button></div>}</>}
           {inspectorTab==='room'&&<><div className="selected-object"><span className="selected-object-icon"><Layers3 size={23}/></span><div><h3>{room.name}</h3><span>{formatArea(area(room.points),units.area)} · {room.points.length} walls</span></div></div><Section title="Room dimensions"><label className="field"><span>Room name</span><input value={room.name} maxLength={120} onChange={e=>{if(e.target.value.trim())changeRoom({name:e.target.value});}}/></label><div className="form-grid two"><NumberField label="Width" value={roomBounds.width} min={.7} max={50} onChange={width=>{const resized=resizeRoom(room,width,roomBounds.depth);changeRoom(resized,true);}}/><NumberField label="Depth" value={roomBounds.depth} min={.7} max={50} onChange={depth=>{const resized=resizeRoom(room,roomBounds.width,depth);changeRoom(resized,true);}}/></div><NumberField label="Ceiling height" value={room.height} min={1.8} max={6} onChange={height=>changeRoom({height,openings:room.openings.map(o=>({...o,height:Math.min(o.height,height),sill:Math.min(o.sill,Math.max(0,height-o.height))}))},true)}/><p className="helper-text">Resizing scales the room outline. Furniture positions stay editable.</p></Section><Section title="Room outline"><RoomOutlineEditor room={room} onChange={changeRoom}/></Section><Section title="Room finishes"><WallTextureControl room={room} onChange={changeRoom}/><label className="field"><span>Floor finish</span><select value={room.floor} onChange={e=>changeRoom({floor:e.target.value as Finish})}>{finishNames.map(f=><option key={f.id} value={f.id}>{f.name}</option>)}</select></label><ColorSwatches label="Wall colour" value={room.wallColor} colors={WALL_COLORS} onChange={wallColor=>changeRoom({wallColor})}/></Section><Section title="Doors & windows"><div className="opening-add-actions"><button className="button secondary" disabled={room.openings.length>=40} onClick={()=>addOpening('door')}><Plus size={13}/>Add door</button><button className="button secondary" disabled={room.openings.length>=40} onClick={()=>addOpening('window')}><Plus size={13}/>Add window</button></div>{!room.openings.length&&<p className="helper-text">Add a door or window, then choose its wall and dimensions.</p>}{room.openings.map((opening,index)=><OpeningEditor key={opening.id} room={room} opening={opening} index={index} onChange={(patch,throwOnError)=>openingChange(opening,patch,throwOnError)} onRemove={()=>changeRoom({openings:room.openings.filter(o=>o.id!==opening.id)})}/>)}<p className="helper-text">Wall numbering follows the outline above. Offset is measured from the start of that wall.</p></Section>{project.sourcePlan&&<Section title="Source floor plan"><span className="source-plan-name"><FileUp size={15}/>{project.sourcePlan.name}</span><p className="helper-text">Page {project.sourcePlan.page} · assisted reconstruction · {units.length} / {areaUnits.find(u=>u.id===units.area)?.symbol}. Check measurements against the original plan.</p><button className="button secondary" onClick={()=>setPdfOpen(true)}>Import another plan</button></Section>}</>}
-          {inspectorTab==='scene'&&<><Section title="Lighting"><label className="range-field"><span>Daylight <strong>{settings.daylight}%</strong></span><input type="range" min="0" max="100" value={settings.daylight} onChange={e=>changeSetting('daylight',Number(e.target.value))}/><span className="range-ends"><small>Evening</small><small>Bright day</small></span></label><Toggle label="Interior lights" checked={settings.lights} onChange={value=>changeSetting('lights',value)}/></Section><Section title="Air & comfort"><Toggle label="Airflow illustration" checked={settings.airflow} onChange={value=>changeSetting('airflow',value)}/><p className="helper-text info-note"><Wind size={14}/>Airflow is an illustration for layout discussion. It does not calculate temperature, coverage or fluid dynamics.</p></Section><Section title="Electrical layout"><Toggle label="Show electrical markers" checked={settings.electrical} onChange={value=>changeSetting('electrical',value)}/><div className="load-total"><span>Approximate connected load</span><strong>{estimatedLoad.toLocaleString('en-IN')}<small> W</small></strong></div>{loadItems.length>0?<table className="load-table"><caption className="sr-only">Illustrative electrical schedule for {room.name}</caption><thead><tr><th>Fixture</th><th>Est. W</th></tr></thead><tbody>{loadItems.map(item=><tr key={item.id}><td><button onClick={()=>chooseItem(item.id)}><ItemIcon kind={item.kind} size={12}/><span>{item.name}</span></button><small>{item.enabled?'On':'Off'}</small></td><td>{item.kind==='socket'?'Unassigned':item.enabled?watts[item.kind]??'—':0}</td></tr>)}</tbody></table>:<p className="helper-text">Add a fan, AC, outlet or light from the Systems library.</p>}<p className="helper-text">Typical fixture estimates only. Confirm actual rated loads and circuits with a qualified professional.</p></Section><Section title="View options"><Toggle label="Whole-home view" checked={settings.wholeHome} onChange={value=>changeSetting('wholeHome',value)}/><Toggle label="Cutaway walls" checked={settings.cutaway} onChange={value=>changeSetting('cutaway',value)}/>{!settings.cutaway&&<Toggle label="See through foreground walls" checked={settings.ghostWalls} onChange={value=>changeSetting('ghostWalls',value)}/>}<Toggle label="Grid" checked={settings.showGrid} onChange={value=>changeSetting('showGrid',value)}/><Toggle label="Dimensions" checked={settings.showDimensions} onChange={value=>changeSetting('showDimensions',value)}/><Toggle label="Walls" checked={settings.showWalls} onChange={value=>changeSetting('showWalls',value)}/><Toggle label="Snap movement" checked={settings.snap} onChange={value=>changeSetting('snap',value)}/></Section></>}
+          {inspectorTab==='scene'&&<><Section title="Lighting"><label className="field"><span>Lighting mood</span><select value={settings.mood??'studio'} onChange={e=>changeSetting('mood',e.target.value as LightingMood)}>{lightingMoods.map(m=><option key={m.id} value={m.id}>{m.label} — {m.note}</option>)}</select></label><label className="range-field"><span>Daylight <strong>{settings.daylight}%</strong></span><input type="range" min="0" max="100" value={settings.daylight} onChange={e=>changeSetting('daylight',Number(e.target.value))}/><span className="range-ends"><small>Evening</small><small>Bright day</small></span></label><Toggle label="Interior lights" checked={settings.lights} onChange={value=>changeSetting('lights',value)}/></Section><Section title="Air & comfort"><Toggle label="Airflow illustration" checked={settings.airflow} onChange={value=>changeSetting('airflow',value)}/><p className="helper-text info-note"><Wind size={14}/>Airflow is an illustration for layout discussion. It does not calculate temperature, coverage or fluid dynamics.</p></Section><Section title="Electrical layout"><Toggle label="Show electrical markers" checked={settings.electrical} onChange={value=>changeSetting('electrical',value)}/><div className="load-total"><span>Approximate connected load</span><strong>{estimatedLoad.toLocaleString('en-IN')}<small> W</small></strong></div>{loadItems.length>0?<table className="load-table"><caption className="sr-only">Illustrative electrical schedule for {room.name}</caption><thead><tr><th>Fixture</th><th>Est. W</th></tr></thead><tbody>{loadItems.map(item=><tr key={item.id}><td><button onClick={()=>chooseItem(item.id)}><ItemIcon kind={item.kind} size={12}/><span>{item.name}</span></button><small>{item.enabled?'On':'Off'}</small></td><td>{item.kind==='socket'?'Unassigned':item.enabled?watts[item.kind]??'—':0}</td></tr>)}</tbody></table>:<p className="helper-text">Add a fan, AC, outlet or light from the Systems library.</p>}<p className="helper-text">Typical fixture estimates only. Confirm actual rated loads and circuits with a qualified professional.</p></Section><Section title="View options"><Toggle label="Whole-home view" checked={settings.wholeHome} onChange={value=>changeSetting('wholeHome',value)}/><Toggle label="Cutaway walls" checked={settings.cutaway} onChange={value=>changeSetting('cutaway',value)}/>{!settings.cutaway&&<Toggle label="See through foreground walls" checked={settings.ghostWalls} onChange={value=>changeSetting('ghostWalls',value)}/>}<Toggle label="Grid" checked={settings.showGrid} onChange={value=>changeSetting('showGrid',value)}/><Toggle label="Dimensions" checked={settings.showDimensions} onChange={value=>changeSetting('showDimensions',value)}/><Toggle label="Walls" checked={settings.showWalls} onChange={value=>changeSetting('showWalls',value)}/><Toggle label="Snap movement" checked={settings.snap} onChange={value=>changeSetting('snap',value)}/></Section></>}
         </div><div className="inspector-footer"><span className="status-dot"/>Changes update the room instantly</div>
       </aside>}
     </main>
-    <footer className="app-footer"><span><span className="status-dot"/>Private project<span className="footer-separator">/</span>{project.items.length} objects<span className="footer-separator">/</span>{formatArea(project.rooms.reduce((total,r)=>total+area(r.points),0),units.area)}</span><span className={collisions.length?'layout-warning':''}>{collisions.length?<><ShieldAlert size={12}/>{collisions.length} possible furniture {collisions.length===1?'overlap':'overlaps'} · check clearances</>:<><CheckCheck size={13}/>Design concept · dimensions in {units.length}</>}</span></footer>
+    <footer className="app-footer"><span><span className="status-dot"/>Private project<span className="footer-separator">/</span>{project.items.length} objects<span className="footer-separator">/</span>{formatArea(project.rooms.reduce((total,r)=>total+area(r.points),0),units.area)}<span className="footer-separator">/</span>Est. ₹{totalBudget.toLocaleString('en-IN')}</span><span className={collisions.length?'layout-warning':''}>{collisions.length?<><ShieldAlert size={12}/>{collisions.length} possible furniture {collisions.length===1?'overlap':'overlaps'} · check clearances</>:<><CheckCheck size={13}/>Design concept · dimensions in {units.length}</>}</span></footer>
     <div className={`toast ${toast?'visible':''}`} role="status" aria-live="polite">{toast&&<><Check size={16}/><span>{toast}</span><button aria-label="Dismiss notification" onClick={()=>setToast('')}><X size={14}/></button></>}</div>
     <input ref={fileRef} type="file" accept=".json,application/json" className="sr-only" tabIndex={-1} aria-label="Import PlanSaathi project JSON" onChange={e=>void importJson(e.target.files?.[0])}/>
     {sketchOpen&&<Suspense fallback={<Dialog open onClose={()=>setSketchOpen(false)} title="Sketch your floor plan"><p className="dialog-copy" role="status">Opening sketch tools…</p></Dialog>}><SketchPlanner startEmpty={sketchFromScratch} project={project} onClose={()=>setSketchOpen(false)} onApply={applySketch}/></Suspense>}
     {pdfOpen&&<Suspense fallback={<Dialog open onClose={()=>setPdfOpen(false)} title="Open a floor plan"><p className="dialog-copy" role="status">Opening import tools…</p></Dialog>}><PdfPlanner open onClose={()=>setPdfOpen(false)} onApply={applyPlan}/></Suspense>}
+
+    <Dialog open={specsOpen} onClose={()=>setSpecsOpen(false)} title="Material Board & BOQ Specification Schedule">
+      <div className="boq-dialog">
+        <div className="boq-summary-strip">
+          <div><span>PROJECT &amp; CLIENT</span><strong>{project.name}</strong><small>{project.client||'Concept Presentation'}</small></div>
+          <div><span>TOTAL FLOOR AREA</span><strong>{formatArea(project.rooms.reduce((t,r)=>t+area(r.points),0),units.area)}</strong><small>{project.rooms.length} {project.rooms.length===1?'room':'rooms'}</small></div>
+          <div><span>ESTIMATED BOQ TOTAL</span><strong>₹{totalBudget.toLocaleString('en-IN')}</strong><small>{project.items.length} customized items</small></div>
+        </div>
+        <h4 className="boq-heading">Architectural Room Finishes</h4>
+        <div className="boq-room-grid">
+          {project.rooms.map(r=>{
+            const fl=FLOOR_FINISHES.find(f=>f.id===r.floor)?.name??r.floor;
+            const wt=WALL_TEXTURES.find(w=>w.value===(r.wallTexture??'paint'))?.name??'Smooth paint';
+            const cs=CEILING_STYLES.find(c=>c.value===(r.ceilingStyle??'flat'))?.name??'Flat Ceiling';
+            return (
+              <div key={r.id} className="boq-room-card">
+                <strong>{r.name}</strong>
+                <span>Floor: {fl} · Ceiling: {cs}</span>
+                <span>Walls: {wt} ({r.wallBrand??'Asian Paints Royale'})</span>
+                <div className="boq-swatch-row">
+                  <span className="mini-swatch" style={{background:r.wallColor}} title={`Wall ${r.wallColor}`}/>
+                  {r.accentWallEdge!==null&&r.accentWallEdge!==undefined&&<span className="mini-swatch" style={{background:r.accentWallColor??'#6d7b6f'}} title={`Feature Wall ${r.accentWallEdge+1}`}/>}
+                  <small>{formatArea(area(r.points),units.area)}</small>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <h4 className="boq-heading">Itemized Brand, Finish &amp; Cost Schedule</h4>
+        <div className="boq-table-wrap">
+          <table className="boq-table">
+            <thead>
+              <tr>
+                <th>Item &amp; Room</th>
+                <th>Brand &amp; Series</th>
+                <th>Custom Finish / Spec</th>
+                <th>Dimensions</th>
+                <th>Est. Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              {project.items.map(item=>{
+                const rName=project.rooms.find(r=>r.id===item.roomId)?.name??'Room';
+                const brandName=item.brand??getBrandsForKind(item.kind)[0]?.brand??'Custom';
+                const modelName=item.modelCode??getBrandsForKind(item.kind)[0]?.series[0]??'Standard';
+                const detail=[
+                  item.material,
+                  item.kind==='sofa'?(item.sofaType??'three-seater'):null,
+                  ['sofa','armchair','bed','single-bed'].includes(item.kind)?(item.fabric??'plain'):null,
+                  item.kind==='socket'?`${item.switchGang??'4M'} · ${item.switchPlate??'matte'}`:null,
+                  item.frontStyle,
+                  item.topShape,
+                  item.lightTemp,
+                  item.specNote,
+                ].filter(Boolean).join(' · ');
+                return (
+                  <tr key={item.id} onClick={()=>{chooseItem(item.id);setSpecsOpen(false);}} className="boq-row">
+                    <td><strong>{item.name}</strong><small>{rName}</small></td>
+                    <td><strong>{brandName}</strong><small>{modelName}</small></td>
+                    <td>
+                      <div className="boq-swatch-cell">
+                        <span className="mini-swatch" style={{background:item.color}}/>
+                        {item.accentColor&&<span className="mini-swatch" style={{background:item.accentColor}}/>}
+                        <span>{detail}</span>
+                      </div>
+                    </td>
+                    <td>{formatLength(item.width,units.length)} × {formatLength(item.depth,units.length)}</td>
+                    <td><strong>₹{getItemPrice(item).toLocaleString('en-IN')}</strong></td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+        <div className="dialog-actions">
+          <button className="button secondary" onClick={()=>setSpecsOpen(false)}>Close</button>
+          <button className="button primary" onClick={()=>{setSpecsOpen(false);void exportPdf();}}><ArrowDownToLine size={15}/>Export Client PDF</button>
+        </div>
+      </div>
+    </Dialog>
 
     <Dialog open={dialog==='files'} onClose={()=>setDialog(null)} title="Project files"><p className="dialog-copy">Your private project is saved to your account. Download an editable file as a portable backup.</p><div className="file-options"><button onClick={exportJson}><FileJson size={22}/><span><strong>Download project</strong><small>Editable PlanSaathi JSON file</small></span><Download size={17}/></button><button onClick={()=>fileRef.current?.click()}><FileUp size={22}/><span><strong>Open project file</strong><small>PlanSaathi JSON · up to 10 MB</small></span><ChevronRight size={17}/></button><button onClick={()=>{setDialog(null);setPdfOpen(true);}}><Layers3 size={22}/><span><strong>Import floor plan</strong><small>PDF or plan image · verify measurements</small></span><ChevronRight size={17}/></button><button onClick={()=>setDialog('new')}><FilePlus2 size={22}/><span><strong>New project</strong><small>Start with an empty room</small></span><ChevronRight size={17}/></button></div>{fileError&&<p className="field-error" role="alert">{fileError}</p>}<div className="dialog-actions"><button className="button secondary" onClick={()=>setDialog(null)}>Close</button></div></Dialog>
     <Dialog open={dialog==='project'} onClose={()=>setDialog(null)} title="Project details"><form noValidate onSubmit={e=>{e.preventDefault();if(!projectName.trim()){setProjectError('Enter a project name.');return;}commit({...project,name:projectName.trim(),client:clientName.trim()});setDialog(null);announce('Project details updated.');}}><label className="field"><span>Project name</span><input autoFocus maxLength={120} value={projectName} aria-invalid={!!projectError} aria-describedby={projectError?'project-name-error':undefined} onChange={e=>{setProjectName(e.target.value);setProjectError('');}}/></label>{projectError&&<p className="field-error" id="project-name-error">{projectError}</p>}<label className="field"><span>Client / concept</span><input maxLength={200} value={clientName} onChange={e=>setClientName(e.target.value)} placeholder="Client name · Concept 01"/></label><div className="dialog-actions"><button className="button secondary" type="button" onClick={()=>setDialog(null)}>Cancel</button><button className="button primary" type="submit">Save details</button></div></form></Dialog>

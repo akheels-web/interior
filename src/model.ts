@@ -4,18 +4,240 @@ export type Point = { x: number; z: number };
 export type Kind = 'sofa' | 'armchair' | 'coffee-table' | 'side-table' | 'tv-unit' | 'plant' | 'rug' | 'floor-lamp' | 'ceiling-fan' | 'ac' | 'socket' | 'pendant' | 'bed' | 'dining-table' | 'dining-chair' | 'wardrobe' | 'desk' | 'tower-ac' | 'cassette-ac' | 'fridge' | 'washing-machine' | 'kitchen-sink' | 'chimney' | 'kitchen-cabinet' | 'hob' | 'microwave' | 'doormat' | 'single-bed' | 'mirror' | 'wall-light' | 'ceiling-light' | 'spotlight' | 'computer' | 'ups' | 'inverter' | 'bookshelf' | 'vanity' | 'toilet' | 'bathtub' | 'curtains' | 'wall-art' | 'tube-light' | 'cfl';
 export type Finish = 'oak' | 'walnut' | 'stone' | 'concrete' | 'marble' | 'terrazzo' | 'ceramic' | 'herringbone' | 'slate' | 'terracotta' | 'carpet';
 export type Material = 'linen' | 'velvet' | 'leather' | 'wood' | 'metal' | 'stone' | 'glass' | 'ceramic' | 'plastic';
-export interface Opening { id: string; edge: number; offset: number; width: number; height: number; sill: number; type: 'window' | 'door'; doorStyle?:'main'|'interior'|'glass'|'sliding'|'opening'; hinge?:'left'|'right'; swing?:number }
-export interface Room { id: string; name: string; points: Point[]; height: number; wallColor: string; floor: Finish; openings: Opening[]; openEdges?:number[]; wallTexture?:'paint'|'limewash'|'brick'|'concrete'|'wood-panel' }
-export interface Item { id: string; roomId: string; kind: Kind; name: string; x: number; y: number; z: number; rotation: number; width: number; depth: number; height: number; color: string; material: Material; variant: number; enabled: boolean; locked: boolean; powerLevel?:number; airflowAngle?:number; airflowRange?:number; sofaType?:'three-seater'|'two-seater'|'l-left'|'l-right'; fabric?:'plain'|'woven'|'boucle'|'ribbed' }
+export type SofaShape = 'three-seater' | 'two-seater' | 'four-seater' | 'l-left' | 'l-right' | 'u-shape' | 'curved' | 'island';
+export type FabricStyle = 'plain' | 'woven' | 'boucle' | 'ribbed' | 'tufted' | 'suede' | 'cane';
+export type ArmStyle = 'track' | 'rolled' | 'pillow' | 'tuxedo' | 'fluted';
+export type LegStyle = 'tapered-wood' | 'brass-stiletto' | 'matte-black-sled' | 'plinth' | 'floating';
+export type SwitchGang = '1M' | '2M' | '4M' | '6M' | '8M' | '12M' | 'touch';
+export type SwitchPlate = 'matte' | 'glass' | 'metal' | 'wood-veneer' | 'frameless';
+export type LightTemp = '2700K' | '3000K' | '4000K' | '6000K';
+export type WallTexture = 'paint' | 'limewash' | 'brick' | 'concrete' | 'wood-panel' | 'wainscoting' | 'marble-cladding' | 'wallpaper';
+export type CeilingStyle = 'flat' | 'cove' | 'coffered' | 'rafters';
+export type FrontStyle = 'sleek-handleless' | 'fluted-glass' | 'louvered' | 'shaker' | 'cane-insert';
+export type TopShape = 'rectangular' | 'oval' | 'round' | 'pebble';
+export type LightingMood = 'studio' | 'golden' | 'evening' | 'gallery';
+export interface Opening { id: string; edge: number; offset: number; width: number; height: number; sill: number; type: 'window' | 'door'; doorStyle?:'main'|'interior'|'glass'|'sliding'|'opening'; hinge?:'left'|'right'; swing?:number; frameColor?:string }
+export interface Room { id: string; name: string; points: Point[]; height: number; wallColor: string; floor: Finish; openings: Opening[]; openEdges?:number[]; wallTexture?:WallTexture; wallBrand?:string; accentWallEdge?:number|null; accentWallColor?:string; ceilingStyle?:CeilingStyle; skirtingColor?:string }
+export interface Item { id: string; roomId: string; kind: Kind; name: string; x: number; y: number; z: number; rotation: number; width: number; depth: number; height: number; color: string; material: Material; variant: number; enabled: boolean; locked: boolean; powerLevel?:number; airflowAngle?:number; airflowRange?:number; sofaType?:SofaShape; fabric?:FabricStyle; armStyle?:ArmStyle; legStyle?:LegStyle; cushionCount?:number; brand?:string; modelCode?:string; accentColor?:string; unitPrice?:number; specNote?:string; switchGang?:SwitchGang; switchPlate?:SwitchPlate; lightTemp?:LightTemp; frontStyle?:FrontStyle; topShape?:TopShape }
 export interface SourcePlan { name: string; image: string; page: number; width: number; height: number }
 export interface Project { version: 1; id: string; name: string; client: string; rooms: Room[]; items: Item[]; updatedAt: string; sourcePlan?: SourcePlan; units?:UnitsConfig }
-export interface Settings { camera: 'orbit' | 'top' | 'walk'; showDimensions: boolean; showGrid: boolean; showWalls: boolean; airflow: boolean; electrical: boolean; daylight: number; lights: boolean; fanSpeed: number; snap: boolean; roomId: string; presenting: boolean; wholeHome:boolean; cutaway:boolean; ghostWalls:boolean; motion:'auto'|'play'|'pause' }
+export interface Settings { camera: 'orbit' | 'top' | 'walk'; showDimensions: boolean; showGrid: boolean; showWalls: boolean; airflow: boolean; electrical: boolean; daylight: number; lights: boolean; fanSpeed: number; snap: boolean; roomId: string; presenting: boolean; wholeHome:boolean; cutaway:boolean; ghostWalls:boolean; motion:'auto'|'play'|'pause'; mood?:LightingMood }
 export const id = () => crypto.randomUUID();
 export const round = (v: number, decimals = 2) => Number(v.toFixed(decimals));
 export const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v));
-export const COLORS = ['#e2d9c8', '#647767', '#b98863', '#354c50', '#c9b5a1', '#e8e6df', '#9c6570', '#343a36'];
+export const COLORS = ['#e2d9c8', '#647767', '#b98863', '#354c50', '#c9b5a1', '#e8e6df', '#9c6570', '#343a36', '#4a5878', '#8a5a44', '#7a6f5d', '#d4af7a', '#24272b', '#c27d60', '#5b7065', '#f3f1eb'];
+export const ACCENT_COLORS: { name: string; hex: string }[] = [
+  { name: 'Brushed Brass', hex: '#c5a059' },
+  { name: 'Champagne Gold', hex: '#d8c39e' },
+  { name: 'Matte Black', hex: '#232629' },
+  { name: 'Gunmetal Grey', hex: '#3d4349' },
+  { name: 'Rose Copper', hex: '#b87b64' },
+  { name: 'Satin Nickel', hex: '#cfd4d8' },
+  { name: 'Warm Alabaster', hex: '#f5f3ec' },
+  { name: 'Smoked Bronze', hex: '#6e4f36' },
+  { name: 'Terracotta Blush', hex: '#b5694f' },
+  { name: 'Sage Mist', hex: '#6a7d6c' },
+  { name: 'Midnight Blue', hex: '#2f435a' },
+  { name: 'Espresso Oak', hex: '#362922' },
+];
+export const SWITCH_COLORS: { name: string; hex: string }[] = [
+  { name: 'Frost White', hex: '#f5f4ef' },
+  { name: 'Anthracite Black', hex: '#26292c' },
+  { name: 'Champagne Gold', hex: '#c8ad7e' },
+  { name: 'Antique Brass', hex: '#b69152' },
+  { name: 'Silver Grey', hex: '#8c949a' },
+  { name: 'Graphite Slate', hex: '#3b4248' },
+  { name: 'Warm Teak', hex: '#6d5038' },
+  { name: 'Pearl Ivory', hex: '#d7cfc2' },
+];
 export const WALL_COLORS = ['#ebe9df', '#d5ddd2', '#c3d0ce', '#e6d6c8', '#b9bdac', '#f7f6f0', '#d7b8a4', '#a3b4b8', '#dcceb5', '#b2a7b7', '#586457', '#414a51', '#bc8c78', '#c7d4df', '#e3cfa1', '#d9bec4'];
 export const MATERIALS:Material[]=['linen','velvet','leather','wood','metal','stone','glass','ceramic','plastic'];
+export const SOFA_SHAPES: { value: SofaShape; label: string; note: string }[] = [
+  { value: 'three-seater', label: 'Three-seater', note: 'Three cushion sections' },
+  { value: 'two-seater', label: 'Two-seater', note: 'Compact loveseat · two cushions' },
+  { value: 'four-seater', label: 'Four-seater', note: 'Grand four-cushion lounge sofa' },
+  { value: 'l-left', label: 'Left chaise', note: 'L shape · chaise on the left' },
+  { value: 'l-right', label: 'Right chaise', note: 'L shape · chaise on the right' },
+  { value: 'u-shape', label: 'U-Sectional', note: 'Double-lounger U-shaped pit sectional' },
+  { value: 'curved', label: 'Curved Bouclé', note: 'Organic crescent designer silhouette' },
+  { value: 'island', label: 'Island Daybed', note: '360° dual-sided hotel lounge island' },
+];
+export const FABRIC_STYLES: { value: FabricStyle; label: string }[] = [
+  { value: 'plain', label: 'Plain' },
+  { value: 'woven', label: 'Woven' },
+  { value: 'boucle', label: 'Bouclé' },
+  { value: 'ribbed', label: 'Ribbed' },
+  { value: 'tufted', label: 'Tufted' },
+  { value: 'suede', label: 'Suede' },
+  { value: 'cane', label: 'Cane' },
+];
+export const ARM_STYLES: { value: ArmStyle; label: string }[] = [
+  { value: 'track', label: 'Architectural Track Arm' },
+  { value: 'rolled', label: 'Classic Rolled Arm' },
+  { value: 'pillow', label: 'Slouch Pillow Arm' },
+  { value: 'tuxedo', label: 'High Tuxedo Box' },
+  { value: 'fluted', label: 'Fluted Timber Shell' },
+];
+export const LEG_STYLES: { value: LegStyle; label: string }[] = [
+  { value: 'tapered-wood', label: 'Tapered Solid Timber' },
+  { value: 'brass-stiletto', label: 'Brushed Brass Stiletto' },
+  { value: 'matte-black-sled', label: 'Matte Black Sled Base' },
+  { value: 'plinth', label: 'Recessed Plinth Base' },
+  { value: 'floating', label: 'Shadow-Gap Floating' },
+];
+export const SWITCH_GANGS: { value: SwitchGang; label: string; note: string }[] = [
+  { value: '1M', label: '1 Module (1M)', note: 'Single bell / master switch' },
+  { value: '2M', label: '2 Module (2M)', note: 'Twin switch or 16A socket' },
+  { value: '4M', label: '4 Module (4M)', note: 'Bedside 2 switches + socket' },
+  { value: '6M', label: '6 Module (6M)', note: 'Room entry + fan regulator' },
+  { value: '8M', label: '8 Module (8M)', note: 'Media wall / kitchen bank' },
+  { value: '12M', label: '12 Module (12M)', note: 'Dual-row master console' },
+  { value: 'touch', label: 'Smart Touch Glass', note: 'Capacitive LED scene panel' },
+];
+export const SWITCH_PLATES: { value: SwitchPlate; label: string }[] = [
+  { value: 'matte', label: 'Velvet Matte Polycarbonate' },
+  { value: 'glass', label: 'Tempered Crystal Glass' },
+  { value: 'metal', label: 'Brushed Anodized Metal' },
+  { value: 'wood-veneer', label: 'Natural Timber Veneer' },
+  { value: 'frameless', label: 'Zero-Bezel Frameless' },
+];
+export const LIGHT_TEMPS: { id: LightTemp; name: string; hex: string }[] = [
+  { id: '2700K', name: '2700K Lounge Warm', hex: '#ffcb82' },
+  { id: '3000K', name: '3000K Soft Warm', hex: '#ffdab0' },
+  { id: '4000K', name: '4000K Natural Gallery', hex: '#fff1db' },
+  { id: '6000K', name: '6000K Crisp Daylight', hex: '#eef6ff' },
+];
+export const WALL_TEXTURES: { value: WallTexture; name: string; note: string }[] = [
+  { value: 'paint', name: 'Smooth paint', note: 'A clean, even surface' },
+  { value: 'limewash', name: 'Limewash', note: 'Soft, mottled mineral finish' },
+  { value: 'brick', name: 'Exposed brick', note: 'A repeating brick bond' },
+  { value: 'concrete', name: 'Cast concrete', note: 'Subtle cast surface variation' },
+  { value: 'wood-panel', name: 'Wood panelling', note: 'Vertical timber detail' },
+  { value: 'wainscoting', name: 'Classic Wainscoting', note: 'Moulded dado rail & lower recessed panels' },
+  { value: 'marble-cladding', name: 'Bookmatched Marble', note: 'Polished stone slab veining' },
+  { value: 'wallpaper', name: 'Textured Wallpaper', note: 'Fine woven silk & botanical motif' },
+];
+export const CEILING_STYLES: { value: CeilingStyle; name: string }[] = [
+  { value: 'flat', label: 'Flat Minimal Ceiling', name: 'Flat Minimal Ceiling' } as { value: CeilingStyle; name: string },
+  { value: 'cove', name: 'Recessed Perimeter LED Cove' },
+  { value: 'coffered', name: 'Architectural Coffered Grid' },
+  { value: 'rafters', name: 'Exposed Timber Rafters' },
+];
+export const FRONT_STYLES: { value: FrontStyle; label: string }[] = [
+  { value: 'sleek-handleless', label: 'Sleek Handleless J-Pull' },
+  { value: 'fluted-glass', label: 'Reeded / Fluted Glass Insert' },
+  { value: 'louvered', label: 'Timber Louvered Shutters' },
+  { value: 'shaker', label: 'Classic Shaker Frame' },
+  { value: 'cane-insert', label: 'Rattan Cane Webbing Insert' },
+];
+export const TOP_SHAPES: { value: TopShape; label: string }[] = [
+  { value: 'rectangular', label: 'Bevelled Rectangular' },
+  { value: 'oval', label: 'Pill / Racetrack Oval' },
+  { value: 'round', label: 'Circular Pedestal' },
+  { value: 'pebble', label: 'Organic Pebble Curve' },
+];
+export const BRAND_PRESETS:Record<string,{brand:string;series:string[]}[]>={
+  'wall-paint':[
+    {brand:'Asian Paints',series:['Royale Glitz','Royale Aspira','Nilaya Limewash']},
+    {brand:'Berger Paints',series:['Silk Glamor','Luxol Satin','Imperia']},
+    {brand:'Dulux',series:['Velvet Touch','Ambiance Linen','Weathershield']},
+    {brand:'JSW Paints',series:['Halo Majestic','Aurus Matte']},
+    {brand:'Sabyasachi × Nilaya',series:['Heritage Wallcoverings','Indigo Silk']}
+  ],
+  Switch:[
+    {brand:'Legrand',series:['Myrius NextGen','Arteor','Lyncus','Allzy']},
+    {brand:'Schneider Electric',series:['AvatarOn','Zencelo','Unica Pure','Livia']},
+    {brand:'Havells',series:['Crabtree Signia','Murano Glass','Fabio','Coral']},
+    {brand:'Panasonic Anchor',series:['Roma Classic','Vision Glass','Woods','Penta']},
+    {brand:'Lauritz Knudsen (L&T)',series:['Englaze','Entice','Oris']},
+    {brand:'Goldmedal',series:['Curve','Air','i-Touch','Nixon']},
+    {brand:'GM Modular',series:['FourFive','G-Magic','Kube']},
+    {brand:'Norisys',series:['Cube Series','Vectra']}
+  ],
+  Seating:[
+    {brand:'Stanley Boutique',series:['chester-luxe','minimal-loft','roma-leather']},
+    {brand:'Roche Bobois',series:['Bubble Curved','Mah Jong','Scenario']},
+    {brand:'BoConcept',series:['Indivi','Osaka','Bergamo','Carmo']},
+    {brand:'Gulmohar Lane',series:['chesterfield-linen','cane-heritage','sahara']},
+    {brand:'Urban Ladder',series:['Apollo','Weston','arabia-lounger']},
+    {brand:'Pepperfry Studio',series:['Casacraft','Woodsworth','Miranda']},
+    {brand:'IKEA',series:['Söderhamn','Kivik','Landskrona']},
+    {brand:'Godrej Interio',series:['engkraft',' Eterna',' Plush']},
+    {brand:'Bespoke Studio',series:['Custom 350GSM Linen','Custom Italian Bouclé','Custom Suede']}
+  ],
+  Tables:[
+    {brand:'BoConcept',series:['Madrid Ceramic','Santiago','Chiva']},
+    {brand:'Bespoke Marble & Brass',series:['Statuario Top','Travertine Plinth','Fluted Teak']},
+    {brand:'Urban Ladder',series:[' Iwaki','zephyr','malabar']},
+    {brand:'IKEA',series:['Stockholm','Lisabo','Lövbacken']},
+    {brand:'Gulmohar Lane',series:['Jaipur Rattan','French Oak','Moroccan']},
+    {brand:'Pepperfry Studio',series:['Amberville','Mudramark']}
+  ],
+  Storage:[
+    {brand:'Hafele + CenturyPly',series:['Club Prime PU','Sainik MR+','Veneer Louver']},
+    {brand:'Hettich + Greenply',series:['Sensys Soft-Close','InTech Push','Fluted Glass']},
+    {brand:'Royale Touche',series:['Crystal High-Gloss','Suede Matte','Zero-Fingerprint']},
+    {brand:'Merino Laminates',series:['TuffGloss','Luvih SuperMatte','Timber Grain']},
+    {brand:'Sleek by Asian Paints',series:['handleless-lacquer','euro-shaker']},
+    {brand:'IKEA',series:['PAX System','BESTÅ Media','BILLY']}
+  ],
+  Lighting:[
+    {brand:'Philips Signify',series:['Hue Smart','Marquee Designer','Cove Line']},
+    {brand:'Jaquar Lighting',series:['Kubix Architectural','Aria Chandelier','COB Track']},
+    {brand:'Havells Lumeno',series:['Neo Track','Aura Sconce','Trimless Spot']},
+    {brand:'Tisva (Usha)',series:['Murano Blown Glass','Linea Pendant','Halo']},
+    {brand:'The White Teak Co.',series:['Alabaster Drop','Brushed Brass Arc','Nordic Dome']},
+    {brand:'Wipro Lighting',series:['Garnet Architectural','Smart WiFi']}
+  ],
+  Systems:[
+    {brand:'Atomberg',series:['Aris Starlight BLDC','Renesa Smart+','Studio+']},
+    {brand:'Havells',series:['Stealth Air BLDC','Astura','Cristo']},
+    {brand:'Crompton',series:['SilentPro Blossom','Energion Groove']},
+    {brand:'Daikin',series:['FTKM Inverter Split','VRV Home','SkyAir Cassette']},
+    {brand:'Mitsubishi Electric',series:['Heavy Duty Kirigamine','JetFlow']},
+    {brand:'LG',series:['ArtCool Mirror','DualCool AI']},
+    {brand:'O General',series:['Tropical Hyper','ASGG Series']}
+  ],
+  Kitchen:[
+    {brand:'Sleek by Asian Paints',series:['Luxury Quartz','Statuario Counter','Matte Acrylic']},
+    {brand:'Hafele Appliances',series:['Aqua-Noir Sink','Altius Hob','Teresa Chimney']},
+    {brand:'Faber',series:['Hood Crest 3D','Maximus Hob']},
+    {brand:'Carysil',series:['Granite Quartz Sink','Tekno Brass Faucet']},
+    {brand:'Kohler Kitchen',series:['Malleco Touchless','Task Workstation']},
+    {brand:'Bosch',series:['Series 8 Built-In','Induction 75cm']}
+  ],
+  Appliances:[
+    {brand:'Samsung Bespoke',series:['Glam Glass','Caviar Black','Clean White']},
+    {brand:'LG Objet Collection',series:['InstaView Door-in-Door','WashTower','NeoChef']},
+    {brand:'Bosch',series:['Series 6 Front-Load','Series 8 Built-In']},
+    {brand:'Siemens',series:['iQ700 StudioLine','iSensoric']},
+    {brand:'Faber',series:['Auto-Clean 90cm','Baffle Filter']},
+    {brand:'IFB',series:['Senator Aqua','Executive Plus']}
+  ],
+  Bathroom:[
+    {brand:'Kohler',series:['Veil Intelligent','Purist Brass','Rêve Freestanding']},
+    {brand:'Jaquar Artize',series:['Tailwater','Laguna Gold','Alive Rimless']},
+    {brand:'Grohe',series:['Essence Brushed Cool Sunrise','Eurocube','Sensia']},
+    {brand:'Toto',series:['Neorest','Flotation Tub','Console']},
+    {brand:'Duravit',series:['Happy D.2 Plus','Philippe Starck','Luv']}
+  ],
+  Decor:[
+    {brand:'D’Decor',series:['Linen Drapery','Blackout Velvet','Sheer Voile']},
+    {brand:'Jaipur Rugs',series:['Hand-Knotted Wool','Manchaha Silk','Kilim Flatweave']},
+    {brand:'Nilaya by Asian Paints',series:['Sabyasachi Heritage','Botanical Canvas']},
+    {brand:'Saint-Gobain',series:['Diamant Bevelled','Tinted Bronze Mirror','LED Touch']},
+    {brand:'Good Earth',series:['Farah Baksh','Charbagh','Ratnakara']}
+  ],
+  Electronics:[
+    {brand:'Apple',series:['Studio Display + Mac','iMac 24"']},
+    {brand:'Dell UltraSharp',series:['4K USB-C Hub','Curved 34"']},
+    {brand:'APC by Schneider',series:['Back-UPS Pro','Smart-UPS']},
+    {brand:'Luminous',series:['Zelio+ Sine Wave','Icon 1600','Optimus']}
+  ]
+};
+export const DEFAULT_ITEM_PRICES:Record<Kind,number>={
+  sofa:95000,armchair:32000,'dining-chair':9500,'coffee-table':28000,'side-table':12500,'dining-table':58000,desk:34000,'tv-unit':52000,wardrobe:115000,bed:78000,'single-bed':42000,plant:6500,rug:36000,'floor-lamp':18500,pendant:14500,'ceiling-fan':6800,ac:48000,socket:1850,'tower-ac':85000,'cassette-ac':110000,fridge:92000,'washing-machine':46000,'kitchen-sink':24000,chimney:28000,'kitchen-cabinet':65000,hob:26000,microwave:22000,doormat:2400,mirror:16500,'wall-light':6200,'ceiling-light':7800,spotlight:4500,computer:115000,ups:8500,inverter:29500,bookshelf:44000,vanity:48000,toilet:26000,bathtub:98000,'wall-art':15000,'tube-light':1400,cfl:650,curtains:24000
+};
 export const FLOOR_FINISHES:{id:Finish;name:string;note:string}[]=[{id:'oak',name:'Natural oak',note:'Warm plank grain'},{id:'walnut',name:'Smoked walnut',note:'Rich dark timber'},{id:'stone',name:'Limestone',note:'Soft mineral texture'},{id:'concrete',name:'Microcement',note:'Matte seamless finish'},{id:'marble',name:'White marble',note:'Subtle grey veining'},{id:'terrazzo',name:'Terrazzo',note:'Warm aggregate chips'},{id:'ceramic',name:'Ivory tiles',note:'Large porcelain squares'},{id:'herringbone',name:'Herringbone wood',note:'Alternating oak blocks'},{id:'slate',name:'Charcoal slate',note:'Dark tiled stone'},{id:'terracotta',name:'Terracotta',note:'Earthy clay squares'},{id:'carpet',name:'Soft carpet',note:'Woven warm grey'}];
 export const SYSTEM_KINDS:Kind[]=['ceiling-fan','ac','tower-ac','cassette-ac','socket','pendant','floor-lamp','wall-light','ceiling-light','spotlight','fridge','washing-machine','chimney','hob','microwave','computer','ups','inverter','tube-light','cfl'];
 export const DEVICE_WATTS:Partial<Record<Kind,number>>={'ceiling-fan':70,ac:1000,'tower-ac':1800,'cassette-ac':2200,pendant:12,'floor-lamp':10,'wall-light':12,'ceiling-light':24,spotlight:8,fridge:180,'washing-machine':500,chimney:200,hob:2000,microwave:1200,computer:250,ups:30,inverter:40,'tube-light':20,cfl:15};
@@ -91,11 +313,29 @@ export function suggestOpening(room:Room,type:'window'|'door'):Opening|null { fo
 export function resizeRoom(room:Room,width:number,depth:number): Room { if(!Number.isFinite(width)||!Number.isFinite(depth)||width<.7||depth<.7||width>50||depth>50)throw new Error('Room dimensions must be from 0.7 to 50 metres.');const b=bounds(room.points);const points=room.points.map(p=>({x:round(b.x+(p.x-b.x)*width/b.width,6),z:round(b.z+(p.z-b.z)*depth/b.depth,6)}));if(points.some(p=>Math.abs(p.x)>150||Math.abs(p.z)>150)||!isSimplePolygon(points))throw new Error('This resize would collapse the outline or move it outside the project bounds. Keep the previous size or move the room first.');const next={...room,points,openings:room.openings.map(o=>{const a=room.points[o.edge],c=room.points[(o.edge+1)%room.points.length],na=points[o.edge],nc=points[(o.edge+1)%points.length];return {...o,width:round(o.width*Math.hypot(nc.x-na.x,nc.z-na.z)/Math.hypot(c.x-a.x,c.z-a.z),4)};})};const error=openingError(next);if(error)throw new Error(error);return next; }
 export function itemFootprint(item:Item) { const a=item.rotation*Math.PI/180; const c=Math.abs(Math.cos(a)),s=Math.abs(Math.sin(a)); return {width:item.width*c+item.depth*s,depth:item.width*s+item.depth*c}; }
 export function overlaps(items:Item[]) { const floor=items.filter(i=>!['rug','pendant','socket','ac','ceiling-fan','floor-lamp','plant'].includes(i.kind)); const result:[string,string][]=[]; for(let i=0;i<floor.length;i++)for(let j=i+1;j<floor.length;j++){const a=floor[i],b=floor[j],fa=itemFootprint(a),fb=itemFootprint(b); if(a.roomId===b.roomId&&a.y+a.height>b.y+.01&&b.y+b.height>a.y+.01&&Math.abs(a.x-b.x)<(fa.width+fb.width)/2-.08&&Math.abs(a.z-b.z)<(fa.depth+fb.depth)/2-.08)result.push([a.id,b.id]);} return result; }
-export function validateProject(value:unknown,copy=true): Project { const v=value as Project; const fail=()=>{throw new Error('This file is not a valid PlanSaathi project. Choose a project exported from this app.');}; const num=(n:unknown,min:number,max:number)=>typeof n==='number'&&Number.isFinite(n)&&n>=min&&n<=max; const text=(s:unknown,max=120)=>typeof s==='string'&&s.length>0&&s.length<=max; const color=(s:unknown)=>typeof s==='string'&&/^#[0-9a-f]{6}$/i.test(s); if(!v||v.version!==1||!text(v.id)||!text(v.name)||typeof v.client!=='string'||v.client.length>200||!Array.isArray(v.rooms)||v.rooms.length<1||v.rooms.length>30||!Array.isArray(v.items)||v.items.length>300) return fail();
-  const roomIds=new Set<string>(); for(const r of v.rooms){if(!r||!text(r.id)||roomIds.has(r.id)||!text(r.name)||!num(r.height,1.8,6)||!color(r.wallColor)||!FLOOR_FINISHES.some(f=>f.id===r.floor)||!Array.isArray(r.points)||r.points.length<3||r.points.length>32||!r.points.every(p=>p&&num(p.x,-150,150)&&num(p.z,-150,150))||!isSimplePolygon(r.points)||!Array.isArray(r.openings)||r.openings.length>40)return fail();if(r.wallTexture!==undefined&&!['paint','limewash','brick','concrete','wood-panel'].includes(r.wallTexture))return fail();if(r.openEdges!==undefined&&(!Array.isArray(r.openEdges)||new Set(r.openEdges).size!==r.openEdges.length||!r.openEdges.every(e=>Number.isInteger(e)&&e>=0&&e<r.points.length)))return fail();roomIds.add(r.id);const openingIds=new Set<string>(); for(const o of r.openings){if(!o||!text(o.id)||openingIds.has(o.id)||!Number.isInteger(o.edge)||o.edge<0||o.edge>=r.points.length||!num(o.offset,.01,.99)||!num(o.width,.2,8)||!num(o.height,.2,r.height)||!num(o.sill,0,r.height-o.height)||!['door','window'].includes(o.type)||(o.doorStyle!==undefined&&!['main','interior','glass','sliding','opening'].includes(o.doorStyle))||(o.hinge!==undefined&&!['left','right'].includes(o.hinge))||(o.swing!==undefined&&!num(o.swing,0,110)))return fail();openingIds.add(o.id);}}
+export function validateProject(value:unknown,copy=true): Project { const v=value as Project; const fail=()=>{throw new Error('This file is not a valid PlanSaathi project. Choose a project exported from this app.');}; const num=(n:unknown,min:number,max:number)=>typeof n==='number'&&Number.isFinite(n)&&n>=min&&n<=max; const text=(s:unknown,max=120)=>typeof s==='string'&&s.length>0&&s.length<=max; const optText=(s:unknown,max=120)=>s===undefined||(typeof s==='string'&&s.length<=max); const color=(s:unknown)=>typeof s==='string'&&/^#[0-9a-f]{6}$/i.test(s); if(!v||v.version!==1||!text(v.id)||!text(v.name)||typeof v.client!=='string'||v.client.length>200||!Array.isArray(v.rooms)||v.rooms.length<1||v.rooms.length>30||!Array.isArray(v.items)||v.items.length>300) return fail();
+  const roomIds=new Set<string>(); for(const r of v.rooms){if(!r||!text(r.id)||roomIds.has(r.id)||!text(r.name)||!num(r.height,1.8,6)||!color(r.wallColor)||!FLOOR_FINISHES.some(f=>f.id===r.floor)||!Array.isArray(r.points)||r.points.length<3||r.points.length>32||!r.points.every(p=>p&&num(p.x,-150,150)&&num(p.z,-150,150))||!isSimplePolygon(r.points)||!Array.isArray(r.openings)||r.openings.length>40)return fail();if(r.wallTexture!==undefined&&!WALL_TEXTURES.some(w=>w.value===r.wallTexture))return fail();if(!optText(r.wallBrand,80)||(r.accentWallEdge!==undefined&&r.accentWallEdge!==null&&(!Number.isInteger(r.accentWallEdge)||r.accentWallEdge<-1||r.accentWallEdge>=r.points.length))||(r.accentWallColor!==undefined&&!color(r.accentWallColor))||(r.ceilingStyle!==undefined&&!CEILING_STYLES.some(c=>c.value===r.ceilingStyle))||(r.skirtingColor!==undefined&&!color(r.skirtingColor)))return fail();if(r.openEdges!==undefined&&(!Array.isArray(r.openEdges)||new Set(r.openEdges).size!==r.openEdges.length||!r.openEdges.every(e=>Number.isInteger(e)&&e>=0&&e<r.points.length)))return fail();roomIds.add(r.id);const openingIds=new Set<string>(); for(const o of r.openings){if(!o||!text(o.id)||openingIds.has(o.id)||!Number.isInteger(o.edge)||o.edge<0||o.edge>=r.points.length||!num(o.offset,.01,.99)||!num(o.width,.2,8)||!num(o.height,.2,r.height)||!num(o.sill,0,r.height-o.height)||!['door','window'].includes(o.type)||(o.doorStyle!==undefined&&!['main','interior','glass','sliding','opening'].includes(o.doorStyle))||(o.hinge!==undefined&&!['left','right'].includes(o.hinge))||(o.swing!==undefined&&!num(o.swing,0,110))||(o.frameColor!==undefined&&!color(o.frameColor)))return fail();openingIds.add(o.id);}}
   for(const room of v.rooms){const error=openingError(room);if(error)throw new Error(error);}
-  const ids=new Set<string>();for(const i of v.items){if(!i||!text(i.id)||ids.has(i.id)||!roomIds.has(i.roomId)||!CATALOG.some(c=>c.kind===i.kind)||!text(i.name)||!num(i.x,-150,150)||!num(i.z,-150,150)||!num(i.y,0,6)||!num(i.rotation,-3600,3600)||!num(i.width,.05,12)||!num(i.depth,.02,12)||!num(i.height,.01,6)||!color(i.color)||!MATERIALS.includes(i.material)||!num(i.variant,0,2)||!Number.isInteger(i.variant)||typeof i.enabled!=='boolean'||typeof i.locked!=='boolean')return fail();if((i.sofaType!==undefined&&!['three-seater','two-seater','l-left','l-right'].includes(i.sofaType))||(i.fabric!==undefined&&!['plain','woven','boucle','ribbed'].includes(i.fabric)))return fail();if((i.powerLevel!==undefined&&!num(i.powerLevel,0,100))||(i.airflowAngle!==undefined&&!num(i.airflowAngle,-60,60))||(i.airflowRange!==undefined&&!num(i.airflowRange,.5,12)))return fail();ids.add(i.id);}
+  const ids=new Set<string>();for(const i of v.items){if(!i||!text(i.id)||ids.has(i.id)||!roomIds.has(i.roomId)||!CATALOG.some(c=>c.kind===i.kind)||!text(i.name)||!num(i.x,-150,150)||!num(i.z,-150,150)||!num(i.y,0,6)||!num(i.rotation,-3600,3600)||!num(i.width,.05,12)||!num(i.depth,.02,12)||!num(i.height,.01,6)||!color(i.color)||!MATERIALS.includes(i.material)||!num(i.variant,0,2)||!Number.isInteger(i.variant)||typeof i.enabled!=='boolean'||typeof i.locked!=='boolean')return fail();if((i.sofaType!==undefined&&!SOFA_SHAPES.some(s=>s.value===i.sofaType))||(i.fabric!==undefined&&!FABRIC_STYLES.some(f=>f.value===i.fabric))||(i.armStyle!==undefined&&!ARM_STYLES.some(a=>a.value===i.armStyle))||(i.legStyle!==undefined&&!LEG_STYLES.some(l=>l.value===i.legStyle))||(i.cushionCount!==undefined&&(!Number.isInteger(i.cushionCount)||i.cushionCount<1||i.cushionCount>6)))return fail();if(!optText(i.brand,80)||!optText(i.modelCode,80)||!optText(i.specNote,240)||(i.accentColor!==undefined&&!color(i.accentColor))||(i.unitPrice!==undefined&&!num(i.unitPrice,0,10_000_000))||(i.switchGang!==undefined&&!SWITCH_GANGS.some(g=>g.value===i.switchGang))||(i.switchPlate!==undefined&&!SWITCH_PLATES.some(p=>p.value===i.switchPlate))||(i.lightTemp!==undefined&&!LIGHT_TEMPS.some(t=>t.id===i.lightTemp))||(i.frontStyle!==undefined&&!FRONT_STYLES.some(f=>f.value===i.frontStyle))||(i.topShape!==undefined&&!TOP_SHAPES.some(t=>t.value===i.topShape)))return fail();if((i.powerLevel!==undefined&&!num(i.powerLevel,0,100))||(i.airflowAngle!==undefined&&!num(i.airflowAngle,-60,60))||(i.airflowRange!==undefined&&!num(i.airflowRange,.5,12)))return fail();ids.add(i.id);}
   if(v.units!==undefined&&(!v.units||typeof v.units!=='object'||Array.isArray(v.units)||!lengthUnits.some(u=>u.id===v.units!.length)||!areaUnits.some(u=>u.id===v.units!.area)))return fail();
   if(v.sourcePlan&&(!text(v.sourcePlan.name,240)||typeof v.sourcePlan.image!=='string'||v.sourcePlan.image.length>4_000_000||!/^data:image\/(png|jpeg);base64,[a-z0-9+/=]+$/i.test(v.sourcePlan.image)||!num(v.sourcePlan.width,1,6000)||!num(v.sourcePlan.height,1,6000)||!Number.isInteger(v.sourcePlan.page)||v.sourcePlan.page<1))return fail();return copy?structuredClone(v):v;
+}
+export function getBrandsForKind(kind:Kind):{brand:string;series:string[]}[]{
+  if(kind==='socket')return BRAND_PRESETS.Switch;
+  const cat=CATALOG.find(c=>c.kind===kind)?.category??'Seating';
+  return BRAND_PRESETS[cat]??BRAND_PRESETS.Seating;
+}
+export function getItemPrice(item:Item):number{
+  if(item.unitPrice!==undefined)return item.unitPrice;
+  const base=DEFAULT_ITEM_PRICES[item.kind]??15000;
+  if(item.kind==='sofa'){
+    const mult=item.sofaType==='u-shape'?1.55:item.sofaType==='four-seater'||item.sofaType==='curved'?1.35:item.sofaType==='l-left'||item.sofaType==='l-right'||item.sofaType==='island'?1.25:item.sofaType==='two-seater'?.78:1;
+    return Math.round(base*mult);
+  }
+  if(item.kind==='socket'){
+    const mult=item.switchGang==='touch'?3.4:item.switchGang==='12M'?2.4:item.switchGang==='8M'?1.9:item.switchGang==='6M'?1.5:item.switchGang==='4M'?1.2:item.switchGang==='1M'?.7:1;
+    return Math.round(base*mult);
+  }
+  return base;
 }
 export function download(data:Blob|string,name:string,type='application/json') { const url=URL.createObjectURL(data instanceof Blob?data:new Blob([data],{type})); const a=document.createElement('a'); a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000); }

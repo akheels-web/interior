@@ -109,3 +109,23 @@ Full-height walls are the default; foreground transparency is an explicit view o
 Projects are owner-isolated; geometry and owned asset pointers are stored in PostgreSQL and raster previews in private R2. Never invent account activity, free entitlements or shared presence. A furnished template is an explicit new-project choice and uses a credit like a blank project. ₹1,499 per monthly paid period includes 10 new projects; ₹299 buys two extra creation credits. Existing projects stay editable when credits are exhausted. The full credit/payment behavior and sources belong to `UX-CONTRACT.md`, not to visual recipes.
 
 Verified authentication, optional authenticator protection for customers, mandatory session MFA for administrators, and revocable server sessions protect account access. Credentials do not belong in browser storage, source, logs or decorative examples. Reset/verification URLs are limited to their intended auth flow. Password fields support paste, password managers and accessible reveal. Admin navigation is role-aware while APIs independently authorize every protected request. Appearance never grants permission.
+
+
+## Bespoke Business Customization, Material Board & Client Presentation
+
+- **Granular Furniture & Seating Configurator**:
+  - **Sofa Shapes (`SOFA_SHAPES`)**: `three-seater`, `two-seater`, `four-seater`, `l-left`, `l-right`, `u-shape`, `curved`, `island` (360° hotel lounge island).
+  - **Cloth & Upholstery Weaves (`FABRIC_STYLES`)**: `plain`, `woven`, `boucle`, `ribbed`, `tufted`, `suede`, `cane`.
+  - **Silhouettes & Bases**: 5 arm/backrest silhouettes (`track`, `rolled`, `pillow`, `tuxedo`, `fluted`), 5 leg/base styles (`tapered-wood`, `brass-stiletto`, `matte-black-sled`, `plinth`, `floating`), adjustable seat cushion divisions (`1`–`6`), and throw-cushion/trim `accentColor`.
+- **Modular Switchboard & Electrical Configurator (`SwitchControls`)**:
+  - **Curated Electrical Brands**: Legrand (`Myrius NextGen`, `Arteor`, `Lyncus`, `Allzy`), Schneider Electric (`AvatarOn`, `Zencelo`, `Unica Pure`), Havells (`Crabtree Signia`, `Murano Glass`), Panasonic Anchor (`Roma Classic`, `Vision Glass`), Lauritz Knudsen (`Englaze`, `Entice`), Goldmedal (`Curve`, `i-Touch`), GM Modular, Norisys, or custom vendor/SKU.
+  - **Modular Gang Sizes (`SWITCH_GANGS`)**: `1M`, `2M`, `4M`, `6M`, `8M`, `12M` (dual-row), and `touch` (capacitive smart glass panel with LED rings).
+  - **Cover Plate Finishes (`SWITCH_PLATES`)**: `matte`, `glass`, `metal`, `wood-veneer`, `frameless`, plus `SWITCH_COLORS` faceplate swatches and `ACCENT_COLORS` rocker/bezel trim.
+- **Universal Catalog Customization (`BrandAndSpecControls`)**:
+  - Every catalog category (Seating, Tables, Storage, Lighting, Systems, Kitchen, Appliances, Bathroom, Decor, Electronics) supports curated Brand & Series presets, custom Brand/Model inputs, category-specific geometry (`topShape`, `frontStyle`, `lightTemp`), secondary/hardware `accentColor`, unit price in `₹ INR`, and designer specification notes.
+- **Room Architectural Finishes**:
+  - 8 wall textures (`paint`, `limewash`, `brick`, `concrete`, `wood-panel`, `wainscoting`, `marble-cladding`, `wallpaper`), wall paint brand (`wallBrand`), feature/accent wall (`accentWallEdge` + `accentWallColor`), and 3D ceiling architecture (`flat`, `cove` with perimeter warm LED glow, `coffered`, `rafters`).
+- **Interactive Client Presentation HUD & BOQ Export**:
+  - Lighting mood presets (`studio`, `golden`, `evening`, `gallery`).
+  - Clicking any object in Presentation Mode opens a floating **Live Client Specification Card** with real-time brand, shape, module, fabric, and colour toggles.
+  - **Material Board & BOQ Schedule Modal** and **Client PDF Export** summarize room finishes, itemized brand/series specs, and total project cost in `₹ INR`.
