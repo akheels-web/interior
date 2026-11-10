@@ -9,6 +9,7 @@ export function useCloudSave(project:Project,initialRevision:number){
   latest.current=project;
   const flush=useCallback(async()=>{
     if(inFlight.current||blocked.current||!pending.current)return;
+    if(revision.current<0){persisted.current=pending.current;pending.current=null;setError('');setState('saved');return;}
     inFlight.current=true;const next=pending.current;pending.current=null;abort.current=new AbortController();
     try{
       const source=next.sourcePlan,savedSource=persisted.current.sourcePlan;
