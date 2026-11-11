@@ -16,15 +16,15 @@ function HeroCopy({decorative=false}:{decorative?:boolean}){
   </div>;
 }
 
-/** Full-bleed photograph that closes into an arched frame as you scroll; the copy is drawn twice so it changes colour exactly at the frame edge. */
+/** Full-bleed photograph that closes into an arched frame as you scroll. The copy is drawn twice so it changes colour exactly at the frame edge; the copy over the photograph is the real one because it is the one visible at the top of the page. */
 export function Hero(){
   return <section className="hx" data-pin aria-labelledby="hero-title">
     <div className="hx-pin">
-      <HeroCopy/>
+      <HeroCopy decorative/>
       <div className="hx-clip">
         <img src="/landing/hero.webp" srcSet="/landing/hero-sm.webp 1100w, /landing/hero.webp 2200w" sizes="100vw" width="2200" height="1160" alt="A warm, open living room with timber ceilings, a low sofa and floor-to-ceiling glass." fetchPriority="high"/>
         <div className="hx-shade" aria-hidden="true"/>
-        <HeroCopy decorative/>
+        <HeroCopy/>
       </div>
     </div>
   </section>;
