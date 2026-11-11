@@ -24,7 +24,7 @@ export default function ScrollEffects(){
     if(reduced){header();listen(window,'scroll',header,{passive:true});return()=>{undo.forEach(fn=>fn());root.classList.remove('is-scrolled','is-nav-hidden');};}
 
     // Reveals. Elements already on screen at hydration skip the entrance so nothing flashes.
-    const revealed=root.querySelectorAll('.ps-reveal,.ps-words');
+    const revealed=root.querySelectorAll('.ps-reveal,.ps-words,.ps-unveil');
     revealed.forEach(element=>{if(element.getBoundingClientRect().top<window.innerHeight*.88)element.classList.add('is-visible');});
     root.classList.add('ps-motion');
     const observer=new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target);}},{rootMargin:'0px 0px -10% 0px',threshold:.15});
@@ -47,6 +47,8 @@ export default function ScrollEffects(){
     void document.fonts?.ready.then(measure);
 
     const tracked=Array.from(root.querySelectorAll<HTMLElement>('[data-progress]'));
+    // Pinned scenes get --p (0–1 through their sticky travel); [data-view] sections get --v (0–1 through the viewport).
+    const pinned=Array.from(root.querySelectorAll<HTMLElement>('[data-pin]')),viewed=Array.from(root.querySelectorAll<HTMLElement>('[data-view]'));
     const pointer={x:-100,y:-100,cx:-100,cy:-100,seen:false};
     let frame=0,velocity=0,previousY=window.scrollY,shownCount='';
     const tick=(time:number)=>{
@@ -55,6 +57,9 @@ export default function ScrollEffects(){
       velocity+=(clamp((y-previousY)/50,-1,1)-velocity)*.12;previousY=y;
       root.style.setProperty('--sy',String(Math.round(y)));root.style.setProperty('--sv',Math.abs(velocity)<.002?'0':velocity.toFixed(3));
       for(const element of tracked){const rect=element.getBoundingClientRect();if(rect.bottom<-200||rect.top>window.innerHeight+200)continue;element.style.setProperty('--wp',clamp((window.innerHeight*.9-rect.top)/(window.innerHeight*.62+rect.height*.5)).toFixed(3));}
+      const height=window.innerHeight;
+      for(const element of pinned){const rect=element.getBoundingClientRect();if(rect.bottom<-height||rect.top>height*2)continue;element.style.setProperty('--p',clamp(-rect.top/Math.max(1,rect.height-height)).toFixed(4));}
+      for(const element of viewed){const rect=element.getBoundingClientRect();if(rect.bottom<-height||rect.top>height*2)continue;element.style.setProperty('--v',clamp((height-rect.top)/(height+rect.height)).toFixed(4));}
       if(gallery&&track&&travel>0){
         const progress=clamp(-gallery.getBoundingClientRect().top/travel);
         track.style.transform=`translate3d(${(-progress*travel).toFixed(1)}px,0,0)`;gallery.style.setProperty('--gp',progress.toFixed(4));
