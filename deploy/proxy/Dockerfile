@@ -6,7 +6,7 @@ RUN go mod download
 COPY main.go ./
 RUN go build -mod=readonly -trimpath -ldflags="-s -w" -o /caddy .
 
-FROM caddy:2.11-alpine@sha256:e70b164da81ef698b3ad19af799ea6086ce6d9e48ed4079eb9fe26f6fbf14ee5
+FROM caddy:2.11-alpine@sha256:78bd35025c7ba85961dd149ae670315129954e77abe2383ac47c89106b35ade9
 # Vendor image predates available Alpine curl/brotli fixes. Re-scan the built image.
 RUN apk upgrade --no-cache
 COPY --from=build /caddy /usr/bin/caddy
