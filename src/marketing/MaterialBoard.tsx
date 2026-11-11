@@ -70,8 +70,8 @@ export default function MaterialBoard(){
         <p className="mg-foot ps-container" aria-hidden="true"><b className="mg-count">01</b><i/><span>{String(tiles.length).padStart(2,'0')} finishes</span></p>
       </div>
     </section>
-    <div className="ps-container">
+    <div className="ps-figures-wrap"><div className="ps-container">
       <dl className="ps-figures">{figures.map(figure=><div key={figure.label} className="ps-reveal"><dt><CountUp value={figure.value}/></dt><dd><strong>{figure.label}</strong>{figure.detail}</dd></div>)}</dl>
-    </div>
+    </div></div>
   </>;
 }
