@@ -90,9 +90,9 @@ export default function LiveFilm(){
       scene.controls.enableZoom=false;scene.controls.enablePan=false;
       let userOrbit=false;scene.controls.addEventListener('start',()=>{userOrbit=true;});
       const looks=[
-        {sun:new T.Color('#fff3df'),ambient:new T.Color('#f9fcfa'),position:new T.Vector3(-3,10,5),sunPower:2.8,ambientPower:1.4,background:new T.Color('#10121e')},
-        {sun:new T.Color('#ffd29d'),ambient:new T.Color('#ffeacc'),position:new T.Vector3(-8,6,7),sunPower:3.05,ambientPower:1.25,background:new T.Color('#14121b')},
-        {sun:new T.Color('#8fa9d6'),ambient:new T.Color('#b9c4dc'),position:new T.Vector3(-4,8,4),sunPower:.7,ambientPower:.82,background:new T.Color('#08090f')},
+        {sun:new T.Color('#fff3df'),ambient:new T.Color('#f9fcfa'),position:new T.Vector3(-3,10,5),sunPower:2.8,ambientPower:1.4,background:new T.Color('#141210')},
+        {sun:new T.Color('#ffd29d'),ambient:new T.Color('#ffeacc'),position:new T.Vector3(-8,6,7),sunPower:3.05,ambientPower:1.25,background:new T.Color('#16130f')},
+        {sun:new T.Color('#8fa9d6'),ambient:new T.Color('#b9c4dc'),position:new T.Vector3(-4,8,4),sunPower:.7,ambientPower:.82,background:new T.Color('#0b0a09')},
       ];
       const background=new T.Color(),offset=new T.Vector3();
       let lookKey='',project=makeProject(lookAt(0)),settingsKey='',settings=settingsFor(false,false);
@@ -162,7 +162,7 @@ export default function LiveFilm(){
     scrollToY(top+travel*(index===0?0:lerp(chapters[index].at,next,.72)));
   };
   const live=mode==='live',active=chapters[chapter];
-  return <section ref={section} className={`lf is-${mode}`} id="story" aria-labelledby="hero-title" data-chapter={chapter} style={{'--film-bg':'#14121b'} as CSSProperties}>
+  return <section ref={section} className={`lf ps-dark is-${mode}`} id="story" aria-labelledby="film-title" data-chapter={chapter} style={{'--film-bg':'#16130f'} as CSSProperties}>
     <noscript><style>{'.lf.is-pending{height:100svh}'}</style></noscript>
     <div className="lf-sticky">
       <div className="lf-stage">
@@ -173,11 +173,10 @@ export default function LiveFilm(){
       </div>
       <div className="lf-overlay ps-container">
         <div className="lf-hero" data-active={chapter===0}>
-          <p className="ps-eyebrow"><span className="ps-signal" aria-hidden="true"/>3D concept studio for interior designers</p>
-          <h1 id="hero-title"><Words text="From floor plan"/> <em><Words text="to a room they can feel." start={3}/></em></h1>
-          <p className="lf-lede">Shape editable 3D rooms, explore materials and light, and help clients see what you see.</p>
+          <p className="ps-eyebrow"><span className="ps-signal" aria-hidden="true"/>The studio, live</p>
+          <h2 id="film-title">Now watch one <em>come together.</em></h2>
+          <p className="lf-lede">This is PlanSaathi’s real 3D engine, not a video. Scroll to build the room, from plan to evening light.</p>
           <div className="lf-actions">
-            <a className="ps-button" href="/register" data-magnetic>Create your workspace<ArrowRight size={18} aria-hidden="true"/></a>
             <a className="ps-text-link" href="/demo">Open the demo studio<ArrowUpRight size={16} aria-hidden="true"/></a>
           </div>
         </div>
