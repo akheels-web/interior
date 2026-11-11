@@ -84,7 +84,7 @@
 ```text
 interior/
 ├── migrations/                 # SQL schema migrations & runner (migrations/runner.ts)
-├── public/                     # Static brand assets, landing poster images, and PDF.js worker
+├── public/                     # Static brand assets, landing photographs (public/landing), and PDF.js worker
 ├── scripts/                    # Local setup, database seeding, PDF worker copy, ops worker
 ├── src/
 │   ├── app/                    # Next.js App Router
@@ -99,6 +99,7 @@ interior/
 │   │   └── api/                # REST routes for projects, plans, billing, webhooks, admin, health, auth
 │   ├── components/ui/          # shadcn-style primitives: Tooltip (Hint, HelpHint), Card, Badge, Progress, Skeleton
 │   ├── marketing/              # Landing page sections
+│   │   ├── Editorial.tsx       # Photographic hero, arched portal and parallax lookbook
 │   │   ├── LiveFilm.tsx        # Scroll-driven film rendered live by StudioScene
 │   │   ├── MaterialBand.tsx    # Catalogue marquee and scroll-filled statement
 │   │   ├── MaterialBoard.tsx   # Pinned gallery painted from the engine's floor & wall textures
@@ -134,7 +135,9 @@ interior/
 ```
 
 ### Landing Page (`/`)
-The public page is a progressive enhancement over static content:
+The public page is an editorial sequence of scroll-driven scenes, each a progressive enhancement over a static layout. `ScrollEffects.tsx` writes `--p` (progress through a pinned scene, on `[data-pin]`) and `--v` (progress through the viewport, on `[data-view]`), and the CSS does the rest:
+- **Hero, portal and lookbook** (`Editorial.tsx`): a full-bleed photograph that closes into an arched frame, an arched window that opens to full screen, and three columns of photographs drifting at different speeds.
+- **Photographs**: `public/landing/*.webp` are licensed stock interiors used as inspiration imagery, listed in `public/landing/SOURCES.md`. Replace them with photographs of real projects when available; they are never presented as PlanSaathi output.
 - **Live film**: `LiveFilm.tsx` loads `StudioScene` after first paint and maps scroll progress to the camera, wall height (`StudioScene.setCutawayHeight`), finishes, furniture and lighting. The last chapter lets visitors change the sofa, floor and light, and drag the room on desktop.
 - **Poster**: `public/brand/landing-hero.jpg` and `landing-hero-portrait.jpg` are captured from the same renderer and hold the stage until WebGL is ready. Re-capture them if the opening shot changes.
 - **Material gallery**: `MaterialBoard.tsx` paints each card with `floorTexture()` and `surfaceTexture()`, so the samples and the counts shown always match `src/model.ts`.

@@ -1,6 +1,7 @@
 import type {Metadata} from 'next';
 import {ArrowRight, ArrowUpRight, Check} from 'lucide-react';
 import {Brand} from '../brand/Brand';
+import {Hero,Lookbook,Portal} from '../marketing/Editorial';
 import MaterialBoard from '../marketing/MaterialBoard';
 import LiveFilm from '../marketing/LiveFilm';
 import MaterialBand from '../marketing/MaterialBand';
@@ -50,13 +51,19 @@ export default function Home() {
       </div></header>
 
       <main id="main">
-        <LiveFilm />
+        <Hero />
 
         <MaterialBand />
 
+        <Portal />
+
+        <LiveFilm />
+
+        <Lookbook />
+
         <MaterialBoard />
 
-        <section className="ps-pricing" id="pricing" aria-labelledby="pricing-title">
+        <section className="ps-pricing ps-dark" id="pricing" aria-labelledby="pricing-title">
           <div className="ps-pricing-inner ps-container">
             <div className="ps-pricing-copy">
               <p className="ps-eyebrow">One plan. Room to create.</p>
@@ -85,13 +92,17 @@ export default function Home() {
           <div className="ps-faq-list ps-reveal">{faqs.map(([question, answer]) => <details key={question}><summary>{question}<span aria-hidden="true">+</span></summary><p>{answer}</p></details>)}</div>
         </section>
 
-        <section className="ps-final ps-container" aria-labelledby="final-title">
+        <section className="ps-final ps-dark" data-view aria-labelledby="final-title">
+          <img src="/landing/closing.webp" srcSet="/landing/closing-sm.webp 1100w, /landing/closing.webp 2200w" sizes="100vw" width="2200" height="1466" loading="lazy" alt="A modern house at dusk, its glass living room glowing under a large tree." />
           <div><p className="ps-eyebrow">Let’s put your ideas in perspective</p><h2 id="final-title" className="ps-words"><Words text="See what’s" /> <em><Words text="possible." start={2} /></em></h2></div>
           <a className="ps-final-link ps-reveal" href="/register" data-magnetic><ArrowUpRight aria-hidden="true" /><span>Create your<br />workspace</span></a>
         </section>
       </main>
 
-      <footer className="ps-footer ps-container"><Brand /><p>A new perspective on interior concepts.</p><a href="/login">Sign in<ArrowUpRight size={16} aria-hidden="true" /></a></footer>
+      <footer className="ps-footer ps-dark"><div className="ps-container">
+        <div className="ps-footer-row"><p>A new perspective on interior concepts.</p><nav aria-label="Footer"><a href="/demo">Demo studio</a><a href="#pricing">Pricing</a><a href="/login">Sign in<ArrowUpRight size={16} aria-hidden="true" /></a></nav></div>
+        <img className="ps-footer-mark" src="/brand/plansaathi-lockup.svg" width="194" height="40" alt="PlanSaathi" loading="lazy" />
+      </div></footer>
     </div>
   );
 }
