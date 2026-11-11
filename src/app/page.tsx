@@ -4,6 +4,7 @@ import {Brand} from '../brand/Brand';
 import MaterialBoard from '../marketing/MaterialBoard';
 import LiveFilm from '../marketing/LiveFilm';
 import MaterialBand from '../marketing/MaterialBand';
+import PricingEstimator from '../marketing/PricingEstimator';
 import ScrollEffects from '../marketing/ScrollEffects';
 import {Words} from '../marketing/Words';
 import {SITE_DESCRIPTION, publicIndexing, siteURL} from '../lib/site';
@@ -62,7 +63,7 @@ export default function Home() {
               <p className="ps-eyebrow">One plan. Room to create.</p>
               <h2 id="pricing-title" className="ps-words"><Words text="Built for your" /> <em><Words text="next big idea." start={3} /></em></h2>
               <p>A private design workspace for your practice, with a straightforward monthly allowance.</p>
-              <div className="ps-extra"><span>Busy month?</span><strong>₹299 for 2 extra projects</strong><p>Unused extra credits carry forward.</p></div>
+              <PricingEstimator />
             </div>
             <div className="ps-price-plan ps-reveal" data-spot>
               <div className="ps-plan-label"><span>The studio plan</span><span>INR / monthly</span></div>
