@@ -9,7 +9,7 @@
 @theme inline {
   --spacing: 4px;
   --font-sans: 'Geist Variable', system-ui, sans-serif;
-  --font-display: 'Space Grotesk Variable', 'Geist Variable', sans-serif;
+  --font-display: 'Fraunces Variable', 'Geist Variable', serif;
   --text-xs: 12px; --text-xs--line-height: 1.5;
   --text-sm: 13px; --text-sm--line-height: 1.55;
   --text-base: 14px; --text-base--line-height: 1.6;

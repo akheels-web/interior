@@ -5,6 +5,7 @@ import MaterialBoard from '../marketing/MaterialBoard';
 import LiveFilm from '../marketing/LiveFilm';
 import MaterialBand from '../marketing/MaterialBand';
 import ScrollEffects from '../marketing/ScrollEffects';
+import {Words} from '../marketing/Words';
 import {SITE_DESCRIPTION, publicIndexing, siteURL} from '../lib/site';
 import '../marketing/landing.css';
 
@@ -31,6 +32,7 @@ const faqs = [
 export default function Home() {
   return (
     <div className="ps-landing">
+      <div className="ps-intro" aria-hidden="true"><img src="/brand/plansaathi-mark-reversed.svg" width="40" height="40" alt=""/><i/></div>
       <ScrollEffects />
       <a href="#main" className="ps-skip">Skip to content</a>
       <header className="ps-topbar"><div className="ps-header ps-container">
@@ -43,7 +45,7 @@ export default function Home() {
         </nav>
         <div className="ps-account-links">
           <a className="ps-login" href="/login">Sign in</a>
-          <a className="ps-button ps-button-small" href="/register">Get started<ArrowUpRight size={16} aria-hidden="true" /></a>
+          <a className="ps-button ps-button-small" href="/register" data-magnetic>Get started<ArrowUpRight size={16} aria-hidden="true" /></a>
         </div>
       </div></header>
 
@@ -56,13 +58,13 @@ export default function Home() {
 
         <section className="ps-pricing" id="pricing" aria-labelledby="pricing-title">
           <div className="ps-pricing-inner ps-container">
-            <div className="ps-pricing-copy ps-reveal">
+            <div className="ps-pricing-copy">
               <p className="ps-eyebrow">One plan. Room to create.</p>
-              <h2 id="pricing-title">Built for your{' '}<br />next big idea.<ArrowUpRight aria-hidden="true" /></h2>
+              <h2 id="pricing-title" className="ps-words"><Words text="Built for your" /> <em><Words text="next big idea." start={3} /></em></h2>
               <p>A private design workspace for your practice, with a straightforward monthly allowance.</p>
               <div className="ps-extra"><span>Busy month?</span><strong>₹299 for 2 extra projects</strong><p>Unused extra credits carry forward.</p></div>
             </div>
-            <div className="ps-price-plan ps-reveal">
+            <div className="ps-price-plan ps-reveal" data-spot>
               <div className="ps-plan-label"><span>The studio plan</span><span>INR / monthly</span></div>
               <p className="ps-price">₹1,499<span>/ month</span></p>
               <p className="ps-plan-allowance">10 new projects per paid monthly cycle.</p>
@@ -72,20 +74,20 @@ export default function Home() {
                 <li><Check size={18} aria-hidden="true" />Concept presentation exports</li>
                 <li><Check size={18} aria-hidden="true" />Existing projects stay editable</li>
               </ul>
-              <a className="ps-button ps-button-white" href="/register">Create your workspace<ArrowRight size={18} aria-hidden="true" /></a>
+              <a className="ps-button" href="/register">Create your workspace<ArrowRight size={18} aria-hidden="true" /></a>
               <p className="ps-purchase-note">Creating an account does not start a subscription.{' '}<br />Review billing before making a purchase.</p>
             </div>
           </div>
         </section>
 
         <section className="ps-faq ps-container" id="faq" aria-labelledby="faq-title">
-          <div className="ps-reveal"><p className="ps-eyebrow">Good to know</p><h2 id="faq-title">A little clarity{' '}<br />before you begin.</h2></div>
+          <div><p className="ps-eyebrow">Good to know</p><h2 id="faq-title" className="ps-words"><Words text="A little clarity" /> <em><Words text="before you begin." start={3} /></em></h2></div>
           <div className="ps-faq-list ps-reveal">{faqs.map(([question, answer]) => <details key={question}><summary>{question}<span aria-hidden="true">+</span></summary><p>{answer}</p></details>)}</div>
         </section>
 
         <section className="ps-final ps-container" aria-labelledby="final-title">
-          <div className="ps-reveal"><p className="ps-eyebrow">Let’s put your ideas in perspective</p><h2 id="final-title">See what’s possible.</h2></div>
-          <a className="ps-final-link" href="/register"><span>Create your workspace</span><ArrowUpRight aria-hidden="true" /></a>
+          <div><p className="ps-eyebrow">Let’s put your ideas in perspective</p><h2 id="final-title" className="ps-words"><Words text="See what’s" /> <em><Words text="possible." start={2} /></em></h2></div>
+          <a className="ps-final-link ps-reveal" href="/register" data-magnetic><ArrowUpRight aria-hidden="true" /><span>Create your<br />workspace</span></a>
         </section>
       </main>
 

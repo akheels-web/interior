@@ -1,8 +1,10 @@
 'use client';
 import {useEffect,useRef,useState,type CSSProperties} from 'react';
-import {ArrowDown,ArrowRight,ArrowUpRight,MousePointer2} from 'lucide-react';
+import {ArrowRight,ArrowUpRight,MousePointer2} from 'lucide-react';
 import type {StudioScene} from '../scene';
 import type {Finish,Item,Kind,Project,Room,Settings,WallTexture} from '../model';
+import {scrollToY} from './smoothScroll';
+import {Words} from './Words';
 import '../scene.css';
 import './film.css';
 
@@ -18,7 +20,7 @@ const chapters=[
 ];
 const sofas=[{name:'Cobalt',color:'#5264ba'},{name:'Caramel',color:'#b9825a'},{name:'Olive',color:'#71794f'}];
 const floors:{id:Finish;name:string;swatch:string}[]=[{id:'herringbone',name:'Herringbone wood',swatch:'#b28d61'},{id:'marble',name:'White marble',swatch:'#eeedea'},{id:'terrazzo',name:'Terrazzo',swatch:'#dccfc0'},{id:'walnut',name:'Smoked walnut',swatch:'#6b4a35'}];
-const moods=['Studio day','Golden hour','Evening lounge'];
+const moods=['Day','Golden hour','Evening'];
 type Look={floor:Finish;wallTexture:WallTexture;wallColor:string;accent:string|null;sofa:string};
 type Override={floor?:Finish;sofa?:string;mood?:number};
 
@@ -88,20 +90,19 @@ export default function LiveFilm(){
       scene.controls.enableZoom=false;scene.controls.enablePan=false;
       let userOrbit=false;scene.controls.addEventListener('start',()=>{userOrbit=true;});
       const looks=[
-        {sun:new T.Color('#fff3df'),ambient:new T.Color('#f9fcfa'),position:new T.Vector3(-3,10,5),sunPower:2.8,ambientPower:1.4,background:new T.Color('#eef0f8')},
-        {sun:new T.Color('#ffd29d'),ambient:new T.Color('#ffeacc'),position:new T.Vector3(-8,6,7),sunPower:3.05,ambientPower:1.25,background:new T.Color('#f6eee3')},
-        {sun:new T.Color('#8fa9d6'),ambient:new T.Color('#b9c4dc'),position:new T.Vector3(-4,8,4),sunPower:.6,ambientPower:.66,background:new T.Color('#12152b')},
+        {sun:new T.Color('#fff3df'),ambient:new T.Color('#f9fcfa'),position:new T.Vector3(-3,10,5),sunPower:2.8,ambientPower:1.4,background:new T.Color('#10121e')},
+        {sun:new T.Color('#ffd29d'),ambient:new T.Color('#ffeacc'),position:new T.Vector3(-8,6,7),sunPower:3.05,ambientPower:1.25,background:new T.Color('#14121b')},
+        {sun:new T.Color('#8fa9d6'),ambient:new T.Color('#b9c4dc'),position:new T.Vector3(-4,8,4),sunPower:.7,ambientPower:.82,background:new T.Color('#08090f')},
       ];
       const background=new T.Color(),offset=new T.Vector3();
       let lookKey='',project=makeProject(lookAt(0)),settingsKey='',settings=settingsFor(false,false);
-      let progress=-1,lighting=1,last=performance.now(),size='',currentChapter=-1,currentFinish='',night=false;
-      const root=element.closest('.ps-landing');
+      let progress=-1,lighting=1,last=performance.now(),size='',currentChapter=-1,currentFinish='';
       const tick=(now:number)=>{
         if(disposed)return;frame=requestAnimationFrame(tick);
         const dt=Math.min(.05,(now-last)/1000);last=now;
         if(!inView||document.hidden)return;
         const rect=element.getBoundingClientRect(),travel=rect.height-window.innerHeight,raw=travel>0?clamp01(-rect.top/travel):0;
-        progress=progress<0?raw:progress+(raw-progress)*(1-Math.exp(-dt*7));
+        progress=progress<0?raw:progress+(raw-progress)*(1-Math.exp(-dt*11));
         const p=progress,ending=p>=.9,chosen=ending?override.current:{};
         if(!ending)userOrbit=false;
 
@@ -119,8 +120,7 @@ export default function LiveFilm(){
         scene.sun.color.lerpColors(from.sun,to.sun,mix);scene.ambient.color.lerpColors(from.ambient,to.ambient,mix);
         scene.sun.position.lerpVectors(from.position,to.position,mix);scene.sun.intensity=lerp(from.sunPower,to.sunPower,mix);scene.ambient.intensity=lerp(from.ambientPower,to.ambientPower,mix);
         background.lerpColors(from.background,to.background,mix);scene.renderer.setClearColor(background);
-        element.style.setProperty('--film-bg',`#${background.getHexString()}`);element.style.setProperty('--night',clamp01(lighting-1).toFixed(3));
-        const nowNight=lighting>1.5&&rect.bottom>120;if(nowNight!==night){night=nowNight;root?.classList.toggle('is-night',night);}
+        element.style.setProperty('--film-bg',`#${background.getHexString()}`);
 
         for(const group of scene.root.children){
           const entry=order.get(group.userData.itemId);if(!entry)continue;
@@ -131,9 +131,9 @@ export default function LiveFilm(){
         const width=stage.clientWidth,height=stage.clientHeight,aspect=width/Math.max(1,height),portrait=aspect<1,camera=scene.camera;
         if(camera instanceof T.PerspectiveCamera){
           const nextSize=`${width}x${height}`;
-          if(nextSize!==size){size=nextSize;if(portrait)camera.setViewOffset(width,height,0,Math.round(height*.17),width,height);else camera.setViewOffset(width,height,-Math.round(width*.14),-Math.round(height*.02),width,height);}
+          if(nextSize!==size){size=nextSize;if(portrait)camera.setViewOffset(width,height,0,Math.round(height*.17),width,height);else camera.setViewOffset(width,height,-Math.round(width*.17),-Math.round(height*.02),width,height);}
         }
-        scene.controls.enabled=ending&&fine;canvas.style.pointerEvents=ending&&fine?'auto':'none';
+        const orbit=ending&&fine;scene.controls.enabled=orbit;canvas.style.pointerEvents=orbit?'auto':'none';if(orbit!==(canvas.dataset.cursor==='Drag')){if(orbit)canvas.dataset.cursor='Drag';else delete canvas.dataset.cursor;}
         if(!userOrbit){
           pointer.sx+=(pointer.x-pointer.sx)*(1-Math.exp(-dt*4));pointer.sy+=(pointer.y-pointer.sy)*(1-Math.exp(-dt*4));
           const planDistance=portrait?Math.max(14,7.9/(.669*aspect)):Math.max(14,11.4/(.669*aspect)),fit=Math.max(1,1.08/aspect);
@@ -153,30 +153,31 @@ export default function LiveFilm(){
       };
       frame=requestAnimationFrame(tick);setMode('live');
     }).catch(()=>setMode('static'));
-    return()=>{disposed=true;cancelAnimationFrame(frame);observer.disconnect();window.removeEventListener('pointermove',move);section.current?.closest('.ps-landing')?.classList.remove('is-night');instance?.dispose();};
+    return()=>{disposed=true;cancelAnimationFrame(frame);observer.disconnect();window.removeEventListener('pointermove',move);instance?.dispose();};
   },[]);
   const choose=(next:Override)=>{override.current={...override.current,...next};setPicked(override.current);};
   const jump=(index:number)=>{
     const element=section.current;if(!element)return;
     const top=element.getBoundingClientRect().top+window.scrollY,travel=element.offsetHeight-window.innerHeight,next=chapters[index+1]?.at??1;
-    window.scrollTo({top:top+travel*(index===0?0:lerp(chapters[index].at,next,.72)),behavior:'smooth'});
+    scrollToY(top+travel*(index===0?0:lerp(chapters[index].at,next,.72)));
   };
   const live=mode==='live',active=chapters[chapter];
-  return <section ref={section} className={`lf is-${mode}`} id="story" aria-labelledby="hero-title" data-chapter={chapter} style={{'--film-bg':'#f6eee3','--night':0} as CSSProperties}>
+  return <section ref={section} className={`lf is-${mode}`} id="story" aria-labelledby="hero-title" data-chapter={chapter} style={{'--film-bg':'#14121b'} as CSSProperties}>
     <noscript><style>{'.lf.is-pending{height:100svh}'}</style></noscript>
     <div className="lf-sticky">
       <div className="lf-stage">
-        <picture><source media="(max-width: 800px)" srcSet="/brand/landing-hero-portrait.jpg"/><img className="lf-poster" src="/brand/landing-hero.jpg" width="1600" height="1000" decoding="async" alt="A living and dining room designed in PlanSaathi: cobalt sectional sofa, herringbone floor, dining table and pendant light, in warm evening sun." fetchPriority="high"/></picture>
+        <picture><source media="(max-width: 800px)" srcSet="/brand/landing-hero-portrait.jpg"/><img className="lf-poster" src="/brand/landing-hero.jpg" width="1600" height="1000" decoding="async" alt="A living and dining room designed in PlanSaathi: cobalt sectional sofa, herringbone floor, dining table and pendant light, lit by warm evening sun on a dark stage." fetchPriority="high"/></picture>
         <div className="lf-canvas" ref={host}/>
+        <div className="lf-glow" aria-hidden="true"/>
         <div className="lf-scrim" aria-hidden="true"/>
       </div>
       <div className="lf-overlay ps-container">
         <div className="lf-hero" data-active={chapter===0}>
           <p className="ps-eyebrow"><span className="ps-signal" aria-hidden="true"/>3D concept studio for interior designers</p>
-          <h1 id="hero-title">From floor plan <span>to a room they can feel.</span></h1>
+          <h1 id="hero-title"><Words text="From floor plan"/> <em><Words text="to a room they can feel." start={3}/></em></h1>
           <p className="lf-lede">Shape editable 3D rooms, explore materials and light, and help clients see what you see.</p>
           <div className="lf-actions">
-            <a className="ps-button" href="/register">Create your workspace<ArrowRight size={18} aria-hidden="true"/></a>
+            <a className="ps-button" href="/register" data-magnetic>Create your workspace<ArrowRight size={18} aria-hidden="true"/></a>
             <a className="ps-text-link" href="/demo">Open the demo studio<ArrowUpRight size={16} aria-hidden="true"/></a>
           </div>
         </div>
@@ -184,7 +185,7 @@ export default function LiveFilm(){
           const index=offset+1,last=index===chapters.length-1;
           return <div key={item.number} className="lf-chapter" data-active={live&&chapter===index} aria-hidden={live&&chapter!==index?true:undefined}>
             <p className="lf-count"><span>{item.number}</span> / 0{chapters.length-1}</p>
-            <h2>{item.title}</h2>
+            <h2><Words text={item.title}/></h2>
             <p className="lf-lede">{item.text}</p>
             {index===3&&<p className="lf-finish" aria-live="polite">{finish&&<><span aria-hidden="true"/>Floor: {finish}</>}</p>}
             {last&&<div className="lf-explore">
@@ -192,13 +193,13 @@ export default function LiveFilm(){
               <fieldset><legend>Floor</legend>{floors.map(option=><button key={option.id} type="button" className="lf-swatch" aria-label={option.name} title={option.name} aria-pressed={(picked.floor??'walnut')===option.id} style={{backgroundColor:option.swatch}} tabIndex={chapter===index?0:-1} onClick={()=>choose({floor:option.id})}/>)}</fieldset>
               <fieldset><legend>Light</legend>{moods.map((name,i)=><button key={name} type="button" className="lf-chip" aria-pressed={(picked.mood??2)===i} tabIndex={chapter===index?0:-1} onClick={()=>choose({mood:i})}>{name}</button>)}</fieldset>
               {canOrbit&&<p className="lf-drag"><MousePointer2 size={14} aria-hidden="true"/>Drag the room to look around</p>}
-              <div className="lf-actions"><a className="ps-button" href="/register" tabIndex={chapter===index?0:-1}>Start your first room<ArrowRight size={18} aria-hidden="true"/></a></div>
+              <div className="lf-actions"><a className="ps-button" href="/register" data-magnetic tabIndex={chapter===index?0:-1}>Start your first room<ArrowRight size={18} aria-hidden="true"/></a></div>
             </div>}
           </div>;
         })}</div>
       </div>
       <nav className="lf-rail" aria-label="Tour chapters">{chapters.map((item,index)=><button key={item.name} type="button" aria-current={chapter===index?'step':undefined} onClick={()=>jump(index)}><span>{item.name}</span><i aria-hidden="true"/></button>)}</nav>
-      <p className="lf-cue" data-active={chapter===0} aria-hidden="true">Scroll to build the room<ArrowDown size={15}/></p>
+      <p className="lf-cue" data-active={chapter===0} aria-hidden="true"><span>Scroll to build the room</span><i/></p>
       <span className="sr-only" role="status">{live&&active.title}</span>
     </div>
   </section>;
