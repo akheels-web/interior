@@ -1,0 +1,96 @@
+/* Landing film. --film-bg and --night (0 day, 1 evening) are written every frame by LiveFilm. */
+.lf{--lf-ink:color-mix(in oklab,var(--brand-ink),#fff calc(var(--night)*100%));--lf-muted:color-mix(in oklab,var(--brand-muted),#c9cee6 calc(var(--night)*100%));--lf-line:color-mix(in oklab,var(--brand-border),#3a4066 calc(var(--night)*100%));position:relative;height:760vh;background:var(--film-bg);color:var(--lf-ink)}
+.lf-sticky{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.lf-stage,.lf-canvas,.lf-scrim{position:absolute;inset:0}
+.lf-poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .9s}
+.lf-canvas{opacity:0;transition:opacity .9s}
+.lf-canvas canvas{display:block;width:100%;height:100%;outline:0;touch-action:pan-y}
+.lf.is-live .lf-canvas{opacity:1}.lf.is-live .lf-poster{opacity:0}
+.lf-scrim{pointer-events:none;background:linear-gradient(90deg,var(--film-bg) 0,color-mix(in srgb,var(--film-bg) 82%,transparent) 26%,transparent 56%)}
+.lf .scene-dimension,.lf .scene-room-label{font-size:12px;background:#ffffffe6;color:var(--brand-ink);box-shadow:0 1px 3px #171a2b1f}
+
+.lf-overlay{position:relative;z-index:2;height:100%;pointer-events:none}
+.lf-overlay a,.lf-overlay button{pointer-events:auto}
+.lf-hero,.lf-chapter{position:absolute;left:0;top:50%;width:min(520px,37%);transform:translateY(-50%);transition:opacity .55s,transform .7s cubic-bezier(.2,.7,.2,1),visibility 0s .55s;opacity:0;visibility:hidden}
+.lf-hero{width:min(760px,60%)}
+.lf-hero[data-active=true],.lf-chapter[data-active=true]{opacity:1;visibility:visible;transition-delay:.12s,.12s,0s}
+.lf-hero:not([data-active=true]){transform:translateY(calc(-50% - 36px))}
+.lf-chapter:not([data-active=true]){transform:translateY(calc(-50% + 36px))}
+.lf.is-pending .lf-hero,.lf.is-static .lf-hero{opacity:1;visibility:visible;transform:translateY(-50%)}
+.lf-hero .ps-eyebrow{display:flex;align-items:center;gap:8px}
+.lf-hero h1{margin-top:24px;font-size:clamp(46px,6.3vw,104px);line-height:.98;letter-spacing:-.05em;text-wrap:balance}
+.lf-hero h1>span{display:block;color:var(--brand-primary)}
+.lf-lede{max-width:430px;margin-top:24px;color:var(--lf-muted);font-size:17px;line-height:1.65}
+.lf-actions{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px;margin-top:32px}
+.lf-count{font-size:13px;font-weight:500;letter-spacing:.4px;color:var(--lf-muted);font-variant-numeric:tabular-nums}
+.lf-count>span{color:color-mix(in oklab,var(--brand-primary),#aab4ff calc(var(--night)*100%));font-weight:600}
+.lf-chapter h2{margin-top:16px;font-size:clamp(34px,3.9vw,60px);line-height:1.02;letter-spacing:-.045em;text-wrap:balance}
+.lf-finish{display:flex;align-items:center;gap:10px;min-height:24px;margin-top:24px;font-size:13px;font-weight:500}
+.lf-finish>span{width:20px;height:2px;background:var(--brand-primary)}
+
+.lf-explore{margin-top:28px;display:grid;gap:16px;pointer-events:auto}
+.lf-explore fieldset{display:flex;align-items:center;gap:10px;margin:0;padding:0;border:0}
+.lf-explore legend{float:left;width:52px;font-size:12px;font-weight:500;color:var(--lf-muted)}
+.lf-swatch{width:34px;height:34px;padding:0;border:2px solid var(--film-bg);border-radius:50%;box-shadow:0 0 0 1px var(--lf-line);cursor:pointer;transition:transform .2s,box-shadow .2s}
+.lf-swatch:hover{transform:scale(1.1)}
+.lf-swatch[aria-pressed=true]{box-shadow:0 0 0 2px var(--lf-ink)}
+.lf-chip{min-height:36px;padding:6px 14px;border:1px solid var(--lf-line);border-radius:999px;background:transparent;color:var(--lf-ink);font-size:13px;font-weight:500;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.lf-chip:hover{border-color:var(--lf-ink)}
+.lf-chip[aria-pressed=true]{background:var(--lf-ink);border-color:var(--lf-ink);color:var(--film-bg)}
+.lf-drag{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--lf-muted)}
+.lf-explore .lf-actions{margin-top:8px}
+.lf .ps-text-link{color:var(--lf-ink)}
+
+.lf-rail{position:absolute;z-index:3;right:28px;top:50%;display:grid;gap:4px;transform:translateY(-50%);opacity:0;transition:opacity .5s}
+.lf.is-live .lf-rail{opacity:1}
+.lf-rail button{display:flex;align-items:center;justify-content:flex-end;gap:12px;min-height:28px;padding:0;border:0;background:none;color:var(--lf-muted);font-size:12px;font-weight:500;cursor:pointer}
+.lf-rail span{opacity:0;transform:translateX(6px);transition:opacity .25s,transform .25s}
+.lf-rail i{width:14px;height:2px;border-radius:2px;background:currentColor;opacity:.45;transition:width .3s,opacity .3s,background .3s}
+.lf-rail button:hover span,.lf-rail button:focus-visible span{opacity:1;transform:none}
+.lf-rail span{padding:2px 8px;border-radius:4px;background:var(--film-bg)}
+.lf-rail button[aria-current]{color:var(--lf-ink)}
+.lf-rail button[aria-current] i{width:30px;opacity:1}
+.lf-cue{position:absolute;z-index:3;left:50%;bottom:28px;display:flex;align-items:center;gap:10px;transform:translateX(-50%);color:var(--lf-muted);font-size:12px;font-weight:500;opacity:0;transition:opacity .4s}
+.lf.is-live .lf-cue[data-active=true]{opacity:1}
+.lf-cue svg{animation:lf-bob 1.6s ease-in-out infinite}
+@keyframes lf-bob{50%{transform:translateY(5px)}}
+
+/* Reduced motion or no WebGL: the poster hero, then the chapters as an ordinary list. */
+.lf.is-static{height:auto;background:var(--brand-surface)}
+.lf.is-static .lf-sticky{position:relative;height:auto;overflow:visible}
+.lf.is-static .lf-stage{height:100svh;background:var(--film-bg)}
+.lf.is-static .lf-overlay{height:auto}
+.lf.is-static .lf-hero{position:relative;top:0;display:flex;flex-direction:column;justify-content:center;min-height:100svh;transform:none}
+.lf.is-static .lf-chapters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:48px 40px;padding-block:88px}
+.lf.is-static .lf-chapter{position:static;width:auto;opacity:1;visibility:visible;transform:none}
+.lf.is-static .lf-chapter h2{font-size:30px;letter-spacing:-1px;line-height:1.15}
+.lf.is-static .lf-chapter:last-child,.lf.is-static .lf-rail,.lf.is-static .lf-cue,.lf.is-static .lf-finish{display:none}
+
+/* The header floats over the film and turns dark with it. */
+@media(min-width:801px){
+  .ps-landing .ps-topbar{position:fixed;inset:0 0 auto;background:transparent;border-bottom-color:transparent;backdrop-filter:none;-webkit-backdrop-filter:none;transition:background .35s,border-color .35s,box-shadow .35s}
+  .ps-landing.is-scrolled .ps-topbar{background:#ffffffd9;border-bottom-color:var(--brand-border);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px)}
+  .ps-landing.is-night .ps-topbar{background:#12152bcc;border-bottom-color:#2b3157;box-shadow:none;color:#fff}
+  .ps-landing.is-night .ps-topbar .ps-brand img{filter:brightness(0) invert(1)}
+  .ps-landing.is-night .ps-topbar .ps-navigation a:hover,.ps-landing.is-night .ps-topbar .ps-login:hover{color:#aab4ff}
+}
+
+@media(max-width:800px){
+  .lf{height:680vh}
+  .lf-scrim{background:linear-gradient(0deg,var(--film-bg) 0,color-mix(in srgb,var(--film-bg) 88%,transparent) 30%,transparent 58%)}
+  .lf-hero,.lf-chapter{top:auto;bottom:64px;width:100%;transform:none}
+  .lf-hero:not([data-active=true]){transform:translateY(-24px)}
+  .lf-chapter:not([data-active=true]){transform:translateY(24px)}
+  .lf.is-pending .lf-hero,.lf.is-static .lf-hero{transform:none}
+  .lf-hero h1{margin-top:14px;font-size:clamp(38px,11vw,56px);letter-spacing:-.045em}
+  .lf-chapter h2{margin-top:10px;font-size:clamp(32px,9vw,44px)}
+  .lf-lede{margin-top:14px;font-size:15px;line-height:1.6}
+  .lf-actions{margin-top:20px;gap:8px 20px}
+  .lf-rail{display:none}
+  .lf-chip{min-height:34px;padding:5px 11px;font-size:12px;white-space:nowrap}
+  .lf-cue{bottom:20px;font-size:11px}
+  .lf-explore{margin-top:16px;gap:10px}.lf-drag{display:none}
+  .lf.is-static .lf-hero{justify-content:flex-end;padding-bottom:64px}
+  .lf.is-static .lf-chapters{grid-template-columns:1fr;gap:32px;padding-block:48px}
+}
+@media(prefers-reduced-motion:reduce){.lf-cue svg{animation:none}}

@@ -31,5 +31,6 @@ describe('full-height and optional see-through walls',()=>{
     const project=createProject(),settings={...defaultSettings,wholeHome:true},context={lastProject:project,settings,dirty:false,root,walls:[{group}],cutawayPlane:new Plane(new Vector3(0,-1,0),1.05),grid:{visible:false},air:{visible:false},electric:{visible:false},sun:new DirectionalLight(),ambient:new HemisphereLight(),lamps:[],fit:vi.fn(),setSelection:vi.fn()};
     Reflect.apply(StudioScene.prototype.update,context,[project,{...settings,cutaway:true},null]);expect(solid.material.clippingPlanes).toHaveLength(1);expect(leaf.material.clippingPlanes).toHaveLength(1);
     Reflect.apply(StudioScene.prototype.update,context,[project,settings,null]);expect(solid.material.clippingPlanes).toBeNull();expect(leaf.material.clippingPlanes).toBeNull();expect(shellClipEnabled(settings)).toBe(false);expect(shellClipEnabled({...settings,cutaway:true,camera:'walk'})).toBe(false);
+    context.dirty=false;Reflect.apply(StudioScene.prototype.setCutawayHeight,context,[2.4]);expect(context.cutawayPlane.constant).toBe(2.4);expect(context.dirty).toBe(true);
   });
 });

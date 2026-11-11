@@ -73,7 +73,7 @@ Locally hosted Geist Variable body/controls and a Geist 650 outlined wordmark. S
 
 ## Layout
 
-Public page: restrained navigation, large product thesis, a wide real-room example, real capability strip, three illustrated workflow steps, one flat cobalt pricing region, native FAQ disclosures and clear account destinations. The room poster reserves the same stage as the interactive renderer. Three.js loads only after an explicit view/material/demo action; loading is bounded, errors are recoverable, and closing/offscreen cleanup releases the scene. Demo changes never create/save projects or consume credits.
+Public page (owner direction, 11 November 2026: the landing must be interactive and animated): a full-viewport scroll film rendered live by the studio engine (`src/marketing/LiveFilm.tsx`), a dark catalogue band, a material board painted from the engine's own floor and wall textures, one flat cobalt pricing region, native FAQ disclosures and clear account destinations. A poster captured from the same renderer holds the stage until Three.js has loaded after first paint. Reduced-motion visitors and devices without WebGL get the poster hero and the chapters as static text. The film pauses offscreen and its changes never create/save projects or consume credits.
 
 Authenticated screens retain their working shell, actual project data, validation, permissions and save/conflict behavior. New type and primary accents do not invent new workflows. The editor remains a spatial workbench with room/catalog properties and its largest continuous canvas.
 
