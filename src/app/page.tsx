@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import {ArrowDown, ArrowRight, ArrowUpRight, Check, FileUp, LockKeyhole, Presentation, Ruler} from 'lucide-react';
 import {Brand} from '../brand/Brand';
 import ConceptPreview from '../marketing/ConceptPreview';
+import Features from '../marketing/Features';
 import RoomStory from '../marketing/RoomStory';
 import ScrollEffects from '../marketing/ScrollEffects';
 import {SITE_DESCRIPTION, publicIndexing, siteURL} from '../lib/site';
@@ -32,11 +33,11 @@ export default function Home() {
     <div className="ps-landing">
       <ScrollEffects />
       <a href="#main" className="ps-skip">Skip to content</a>
-      <header className="ps-header ps-container">
+      <header className="ps-topbar"><div className="ps-header ps-container">
         <Brand />
         <nav className="ps-navigation" aria-label="Public navigation">
           <a href="#story">Tour</a>
-          <a href="#workflow">Product</a>
+          <a href="#features">Features</a>
           <a href="#pricing">Pricing</a>
           <a href="#faq">FAQs</a>
         </nav>
@@ -44,7 +45,7 @@ export default function Home() {
           <a className="ps-login" href="/login">Sign in</a>
           <a className="ps-button ps-button-small" href="/register">Get started<ArrowUpRight size={16} aria-hidden="true" /></a>
         </div>
-      </header>
+      </div></header>
 
       <main id="main">
         <section className="ps-hero ps-container" aria-labelledby="hero-title">
@@ -141,6 +142,8 @@ export default function Home() {
             </li>
           </ol>
         </section>
+
+        <Features />
 
         <section className="ps-pricing" id="pricing" aria-labelledby="pricing-title">
           <div className="ps-pricing-inner ps-container">

@@ -7,7 +7,7 @@ export function proxy(request:NextRequest){
   const headers=new Headers(request.headers);headers.set('x-nonce',nonce);headers.set('Content-Security-Policy',csp);
   const response=NextResponse.next({request:{headers}});response.headers.set('Content-Security-Policy',csp);response.headers.set('Cache-Control','private, no-store');
   if(request.nextUrl.pathname!=='/')response.headers.set('X-Robots-Tag','noindex, nofollow');
-  if(request.nextUrl.protocol==='https:')response.headers.set('Strict-Transport-Security','max-age=31536000');
+  if(request.nextUrl.protocol==='https:')response.headers.set('Strict-Transport-Security','max-age=31536000; includeSubDomains');
   return response;
 }
 export const config={matcher:['/((?!api|_next/static|_next/image|favicon.ico|icon.svg|robots.txt|sitemap.xml|opengraph-image|.*\\.(?:png|jpg|jpeg|webp|svg|woff2|mjs)$).*)']};

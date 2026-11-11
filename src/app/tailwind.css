@@ -1,0 +1,50 @@
+/* Tailwind is added alongside the existing stylesheets: no preflight (it would reset the editor and
+   platform CSS), and utilities stay unlayered so they are not outranked by the unlayered legacy rules. */
+@layer theme;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css";
+@source "..";
+
+/* The app's root font size is 13px, so sizes are declared in px rather than rem. */
+@theme inline {
+  --spacing: 4px;
+  --font-sans: 'Geist Variable', system-ui, sans-serif;
+  --font-display: 'Space Grotesk Variable', 'Geist Variable', sans-serif;
+  --text-xs: 12px; --text-xs--line-height: 1.5;
+  --text-sm: 13px; --text-sm--line-height: 1.55;
+  --text-base: 14px; --text-base--line-height: 1.6;
+  --text-lg: 16px; --text-lg--line-height: 1.5;
+  --text-xl: 20px; --text-xl--line-height: 1.35;
+  --text-2xl: 24px; --text-2xl--line-height: 1.25;
+  --text-3xl: 32px; --text-3xl--line-height: 1.15;
+  --text-4xl: 40px; --text-4xl--line-height: 1.1;
+  --text-5xl: 52px; --text-5xl--line-height: 1.06;
+  --radius-sm: 4px; --radius-md: 7px; --radius-lg: 12px; --radius-xl: 16px; --radius-2xl: 20px;
+  --container-sm: 384px; --container-md: 448px; --container-lg: 512px; --container-xl: 576px; --container-2xl: 672px;
+  --color-background: var(--brand-ground);
+  --color-foreground: var(--brand-ink);
+  --color-card: var(--brand-surface);
+  --color-card-foreground: var(--brand-ink);
+  --color-popover: var(--brand-ink);
+  --color-popover-foreground: #fff;
+  --color-primary: var(--brand-primary);
+  --color-primary-dark: var(--brand-primary-dark);
+  --color-primary-foreground: #fff;
+  --color-secondary: var(--brand-tint);
+  --color-secondary-foreground: var(--brand-primary-dark);
+  --color-muted: var(--brand-ground);
+  --color-muted-foreground: var(--brand-muted);
+  --color-accent: var(--brand-tint);
+  --color-accent-foreground: var(--brand-ink);
+  --color-destructive: #a84437;
+  --color-border: var(--brand-border);
+  --color-input: var(--brand-border);
+  --color-ring: var(--brand-primary);
+  --animate-tooltip: ui-tooltip .16s cubic-bezier(.2,.7,.2,1);
+  --animate-shimmer: ui-shimmer 1.4s linear infinite;
+  @keyframes ui-tooltip { from { opacity: 0; transform: scale(.96) translateY(2px); } }
+  @keyframes ui-shimmer { to { background-position: -200% 0; } }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-tooltip, .animate-shimmer { animation: none; }
+}

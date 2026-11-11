@@ -168,7 +168,7 @@ Open **`http://127.0.0.1:3000`** in your browser (use `127.0.0.1` rather than `l
 
 ### Seeded Local Accounts (`npm run dev:seed`)
 Running `npm run dev:seed` creates three verified local accounts with audited offline development credits and writes their generated credentials to **`.local/development-accounts.json`** (gitignored):
-- `grow.lokal1@gmail.com` — Approved Super-Admin account
+- `admin@forma.local` (or your `SUPER_ADMIN_EMAIL`) — Super-Admin account
 - `studio.one@forma.local` — Designer studio account 1
 - `studio.two@forma.local` — Designer studio account 2
 

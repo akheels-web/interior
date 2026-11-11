@@ -74,3 +74,14 @@
 @media(max-width:900px){.ps-story-inner{grid-template-columns:1fr;gap:16px;padding-block:24px}.ps-story-copy h2{font-size:34px;letter-spacing:-1.6px;margin-top:8px}.ps-story-chapters{margin:16px 0 0}.ps-story.is-animated .ps-story-chapters li:not([aria-current]){display:none}.ps-story.is-animated .ps-story-cta{display:none}.ps-story-chapters p{padding-left:40px}.ps-story-stage{padding:12px 12px 64px}.ps-story-room{max-height:48svh;margin-inline:auto}.ps-story:not(.is-animated) .ps-story-cta{margin-bottom:16px}}
 @media(max-width:520px){.ps-story-palette{left:12px;bottom:12px}.ps-story-progress{right:12px;bottom:28px;width:72px}.ps-story-palette legend{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.ps-story-room{transform:none}}
+
+/* Sticky header: full height at the top of the page, compact glass bar once scrolled. */
+.ps-topbar{position:sticky;top:0;z-index:60;background:#ffffffd9;backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid var(--brand-border);transition:box-shadow .3s}
+.ps-topbar .ps-header{border-bottom:0;transition:min-height .3s cubic-bezier(.2,.7,.2,1)}
+.ps-landing.is-scrolled .ps-topbar{box-shadow:0 8px 28px #171a2b0d}.ps-landing.is-scrolled .ps-header{min-height:68px}
+.ps-landing section[id]{scroll-margin-top:68px}.ps-story.is-animated .ps-story-sticky{top:68px;height:calc(100vh - 68px);height:calc(100svh - 68px)}
+.ps-navigation a{position:relative}.ps-navigation a::after{content:'';position:absolute;left:0;right:0;bottom:8px;height:2px;background:var(--brand-primary);transform:scaleX(0);transform-origin:0 50%;transition:transform .25s}.ps-navigation a:hover::after{transform:scaleX(1)}
+@media(max-width:800px){.ps-topbar{position:static;backdrop-filter:none;-webkit-backdrop-filter:none}.ps-landing.is-scrolled .ps-header{min-height:88px}.ps-story.is-animated .ps-story-sticky{top:0;height:100vh;height:100svh}}
+/* Hero: a faint drafting grid that fades out around the headline. */
+.ps-hero{position:relative}.ps-hero::before{content:'';position:absolute;inset:0 -48px auto;height:420px;z-index:-1;pointer-events:none;background-image:linear-gradient(var(--brand-border) 1px,transparent 1px),linear-gradient(90deg,var(--brand-border) 1px,transparent 1px);background-size:44px 44px;mask-image:radial-gradient(ellipse 70% 90% at 30% 0,#000 10%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse 70% 90% at 30% 0,#000 10%,transparent 75%);opacity:.7}
+.ps-landing main{position:relative;z-index:0}.ps-landing main{overflow-x:clip}

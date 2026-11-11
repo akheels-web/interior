@@ -4,14 +4,13 @@ import { ArrowRight, Check, ChevronDown, CreditCard, FolderOpen, LogOut, Menu, S
 import { authClient } from '../lib/auth-client';
 import { Dialog } from '../ui';
 import { type Me, message, type PlatformView, useApi } from './api';
-import AuthScreen from './AuthScreen';
-import Projects from './Projects';
-import Billing from './Billing';
-import Profile from './Profile';
-import Admin from './Admin';
+import dynamic from 'next/dynamic';
 import { Brand, ErrorBox, Spinner } from './shared';
 import './platform.css';
 
+// Each view loads on demand so a route only ships the screen it shows.
+const viewLoading=()=> <Spinner label="Opening your workspace…"/>;
+const AuthScreen=dynamic(()=>import('./AuthScreen')),Projects=dynamic(()=>import('./Projects'),{loading:viewLoading}),Billing=dynamic(()=>import('./Billing'),{loading:viewLoading}),Profile=dynamic(()=>import('./Profile'),{loading:viewLoading}),Admin=dynamic(()=>import('./Admin'),{loading:viewLoading});
 const authViews=['login','register','forgot','reset','verify','twofactor'];
 export default function Platform({view}:{view:PlatformView}){
   const authentication=authViews.includes(view);const account=useApi<Me>(authentication?null:'/api/me');const [menu,setMenu]=useState(false);const [toast,setToast]=useState('');const [signOutOpen,setSignOutOpen]=useState(false);const [signOutBusy,setSignOutBusy]=useState(false);const [signOutError,setSignOutError]=useState('');

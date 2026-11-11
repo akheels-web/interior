@@ -48,6 +48,7 @@ jobs:
           for part in app db proxy; do
             archive="$RUNNER_TEMP/plansaathi-$part.tar"
             docker image save --output "$archive" "plansaathi-$part:ci"
+            chmod 644 "$archive" # the scanner runs as a non-root user
             docker run --rm --read-only --cap-drop ALL --security-opt no-new-privileges:true \
               --mount source=plansaathi-ci-scan-cache,target=/cache \
               --mount source=plansaathi-ci-scan-tmp,target=/tmp \
