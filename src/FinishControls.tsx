@@ -1,5 +1,9 @@
 'use client';
 import { Check } from 'lucide-react';
+import { Hint, HelpHint } from './components/ui/tooltip';
+
+const FABRIC_HINTS: Record<string, string> = { plain: 'Smooth, even cloth with no visible pattern.', woven: 'Visible interlaced threads, like a classic textured upholstery.', boucle: 'Looped, nubby yarn with a soft, cosy look.', ribbed: 'Raised parallel lines running across the cloth.', tufted: 'Buttoned or pinched cushioning for a quilted look.', suede: 'Soft, brushed surface similar to suede leather.', cane: 'Open woven rattan pattern, common on chairs and beds.' };
+const TEMP_HINTS: Record<string, string> = { '2700K': 'Very warm, golden light for living rooms and bedrooms.', '3000K': 'Soft warm white, a good all-round home choice.', '4000K': 'Neutral white light, good for kitchens and work areas.', '6000K': 'Cool, bluish daylight white for bright task lighting.' };
 import {
   ACCENT_COLORS,
   ARM_STYLES,
@@ -32,12 +36,12 @@ export function SofaControls({ item, onChange }: { item: Item; onChange: (patch:
           <legend>Sofa shape</legend>
           <div className="sofa-shape-grid">
             {SOFA_SHAPES.map(shape => (
-              <button
+              <Hint key={shape.value} label={shape.note}><button
                 key={shape.value}
                 type="button"
                 className={(item.sofaType ?? 'three-seater') === shape.value ? 'selected' : ''}
                 aria-pressed={(item.sofaType ?? 'three-seater') === shape.value}
-                title={shape.note}
+                
                 onClick={() => onChange({ sofaType: shape.value })}
               >
                 <span className={`sofa-shape-drawing sofa-shape-${shape.value}`} style={{ backgroundColor: item.color }}>
@@ -47,16 +51,16 @@ export function SofaControls({ item, onChange }: { item: Item; onChange: (patch:
                 </span>
                 <span>{shape.label}</span>
                 {(item.sofaType ?? 'three-seater') === shape.value && <Check size={12} />}
-              </button>
+              </button></Hint>
             ))}
           </div>
         </fieldset>
       )}
       <fieldset className="fabric-field">
-        <legend>Cloth texture</legend>
+        <legend>Cloth texture</legend><HelpHint label="Weave and surface texture of the upholstery. Colour is set separately below." />
         <div className="fabric-options">
           {FABRIC_STYLES.map(fabric => (
-            <button
+            <Hint key={fabric.value} label={FABRIC_HINTS[fabric.value]}><button
               key={fabric.value}
               type="button"
               className={(item.fabric ?? 'plain') === fabric.value ? 'selected' : ''}
@@ -66,7 +70,7 @@ export function SofaControls({ item, onChange }: { item: Item; onChange: (patch:
               <span className={`fabric-sample fabric-${fabric.value}`} style={{ backgroundColor: item.color }} />
               <span>{fabric.label}</span>
               {(item.fabric ?? 'plain') === fabric.value && <Check size={10} />}
-            </button>
+            </button></Hint>
           ))}
         </div>
       </fieldset>
@@ -119,20 +123,20 @@ export function SwitchControls({ item, onChange }: { item: Item; onChange: (patc
   return (
     <div className="switch-controls">
       <fieldset className="fabric-field">
-        <legend>Modular gang configuration</legend>
+        <legend>Modular gang configuration</legend><HelpHint label="M means module, the standard switch-plate unit. Pick the plate size that fits your fittings." />
         <div className="chip-grid">
           {SWITCH_GANGS.map(g => (
-            <button
+            <Hint key={g.value} label={g.note}><button
               key={g.value}
               type="button"
               className={`chip-btn ${(item.switchGang ?? '4M') === g.value ? 'selected' : ''}`}
               aria-pressed={(item.switchGang ?? '4M') === g.value}
-              title={g.note}
+              
               onClick={() => onChange({ switchGang: g.value })}
             >
               <strong>{g.label}</strong>
               <small>{g.note}</small>
-            </button>
+            </button></Hint>
           ))}
         </div>
       </fieldset>
@@ -150,17 +154,17 @@ export function SwitchControls({ item, onChange }: { item: Item; onChange: (patc
         <span>Switchplate colour presets</span>
         <div className="swatches">
           {SWITCH_COLORS.map(c => (
-            <button
+            <Hint key={c.hex} label={c.name}><button
               key={c.hex}
               type="button"
               className={`swatch ${item.color.toLowerCase() === c.hex.toLowerCase() ? 'selected' : ''}`}
               style={{ background: c.hex }}
               onClick={() => onChange({ color: c.hex })}
               aria-label={`Switch colour ${c.name}`}
-              title={c.name}
+              
             >
               {item.color.toLowerCase() === c.hex.toLowerCase() && <Check size={12} />}
-            </button>
+            </button></Hint>
           ))}
         </div>
       </div>
@@ -236,14 +240,14 @@ export function BrandAndSpecControls({ item, onChange }: { item: Item; onChange:
             onChange={e => onChange({ brand: e.target.value })}
           />
         </label>
-        <label className="field">
+        <Hint label="Stock code from the maker, shown on your BOQ so a vendor can order the exact item."><label className="field">
           <span>Model / SKU Code</span>
           <input
             value={item.modelCode ?? ''}
             placeholder={presets[0]?.series[0] ?? 'Series or SKU'}
             onChange={e => onChange({ modelCode: e.target.value })}
           />
-        </label>
+        </label></Hint>
       </div>
 
       {showTableTop && (
@@ -274,10 +278,10 @@ export function BrandAndSpecControls({ item, onChange }: { item: Item; onChange:
 
       {showLightTemp && (
         <fieldset className="fabric-field">
-          <legend>Colour temperature (Kelvin)</legend>
+          <legend>Colour temperature (Kelvin)</legend><HelpHint label="Kelvin (K) is the warmth of light. Lower numbers are warmer and yellower, higher are cooler." />
           <div className="chip-grid">
             {LIGHT_TEMPS.map(t => (
-              <button
+              <Hint key={t.id} label={TEMP_HINTS[t.id]}><button
                 key={t.id}
                 type="button"
                 className={`chip-btn ${(item.lightTemp ?? '3000K') === t.id ? 'selected' : ''}`}
@@ -286,7 +290,7 @@ export function BrandAndSpecControls({ item, onChange }: { item: Item; onChange:
               >
                 <span className="temp-dot" style={{ background: t.hex }} />
                 <span>{t.name}</span>
-              </button>
+              </button></Hint>
             ))}
           </div>
         </fieldset>
@@ -304,23 +308,23 @@ export function BrandAndSpecControls({ item, onChange }: { item: Item; onChange:
         </div>
         <div className="swatches">
           {ACCENT_COLORS.map(c => (
-            <button
+            <Hint key={c.hex} label={c.name}><button
               key={c.hex}
               type="button"
               className={`swatch ${(item.accentColor ?? '').toLowerCase() === c.hex.toLowerCase() ? 'selected' : ''}`}
               style={{ background: c.hex }}
               onClick={() => onChange({ accentColor: c.hex })}
               aria-label={`${accentLabel} ${c.name}`}
-              title={c.name}
+              
             >
               {(item.accentColor ?? '').toLowerCase() === c.hex.toLowerCase() && <Check size={12} />}
-            </button>
+            </button></Hint>
           ))}
         </div>
       </div>
 
       <div className="two-col">
-        <label className="field">
+        <Hint label="Your estimated price for one unit. It adds up into the project budget and BOQ."><label className="field">
           <span>Unit Estimate (₹ INR)</span>
           <input
             type="number"
@@ -329,7 +333,7 @@ export function BrandAndSpecControls({ item, onChange }: { item: Item; onChange:
             value={getItemPrice(item)}
             onChange={e => onChange({ unitPrice: Math.max(0, Number(e.target.value) || 0) })}
           />
-        </label>
+        </label></Hint>
         <label className="field">
           <span>Designer Spec Note</span>
           <input
@@ -379,7 +383,7 @@ export function WallTextureControl({ room, onChange }: { room: Room; onChange: (
             ))}
           </select>
         </label>
-        <label className="field">
+        <Hint label="Pick the ceiling design for this room: flat, cove, coffered or rafters."><label className="field">
           <span>Ceiling Architecture</span>
           <select
             value={room.ceilingStyle ?? 'flat'}
@@ -391,10 +395,10 @@ export function WallTextureControl({ room, onChange }: { room: Room; onChange: (
               </option>
             ))}
           </select>
-        </label>
+        </label></Hint>
       </div>
       <div className="two-col">
-        <label className="field">
+        <Hint label="Paint one wall in a contrasting shade or texture as a focal point."><label className="field">
           <span>Feature / Accent Wall</span>
           <select
             value={room.accentWallEdge === null || room.accentWallEdge === undefined ? 'none' : String(room.accentWallEdge)}
@@ -412,7 +416,7 @@ export function WallTextureControl({ room, onChange }: { room: Room; onChange: (
               </option>
             ))}
           </select>
-        </label>
+        </label></Hint>
         {room.accentWallEdge !== null && room.accentWallEdge !== undefined && (
           <label className="field">
             <div className="between">

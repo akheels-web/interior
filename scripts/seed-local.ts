@@ -8,7 +8,7 @@ if(process.env.NODE_ENV!=='development'||process.env.LOCAL_DEVELOPMENT!=='true'|
 process.env.ALLOW_OFFLINE_BILLING_FIXTURES='true';
 const file='.local/development-accounts.json';
 type Fixture={name:string;email:string;password:string;id?:string};let accounts:Fixture[];
-try{accounts=JSON.parse(await readFile(file,'utf8'));}catch{accounts=[{name:'Forma administrator',email:process.env.SUPER_ADMIN_EMAIL||'grow.lokal1@gmail.com',password:randomBytes(24).toString('base64url')},{name:'Studio One',email:'studio.one@forma.local',password:randomBytes(24).toString('base64url')},{name:'Studio Two',email:'studio.two@forma.local',password:randomBytes(24).toString('base64url')}];}
+try{accounts=JSON.parse(await readFile(file,'utf8'));}catch{accounts=[{name:'Forma administrator',email:process.env.SUPER_ADMIN_EMAIL||'admin@forma.local',password:randomBytes(24).toString('base64url')},{name:'Studio One',email:'studio.one@forma.local',password:randomBytes(24).toString('base64url')},{name:'Studio Two',email:'studio.two@forma.local',password:randomBytes(24).toString('base64url')}];}
 try{
   for(const entry of accounts){
     const existing=await pool.query('SELECT id FROM "user" WHERE lower(email)=lower($1)',[entry.email]);

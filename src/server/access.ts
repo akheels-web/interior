@@ -12,7 +12,7 @@ export async function principal(request:Request):Promise<Principal>{
     await client.query('INSERT INTO app_accounts(user_id) VALUES($1) ON CONFLICT DO NOTHING',[session.user.id]);
     const result=await client.query<AccountRow>('SELECT a.*,EXISTS(SELECT 1 FROM session_mfa m WHERE m.session_id=$2 AND m.user_id=a.user_id AND m.verified_at>=a.mfa_since) AS mfa_verified FROM app_accounts a WHERE user_id=$1 FOR UPDATE OF a',[session.user.id,session.session.id]);let row=result.rows[0];
     if(row.status!=='active')throw new HttpError(403,'This account is suspended. Contact support.','ACCOUNT_SUSPENDED');
-    const bootstrapEmail=process.env.SUPER_ADMIN_EMAIL||(process.env.NODE_ENV==='development'?'grow.lokal1@gmail.com':'');
+    const bootstrapEmail=process.env.SUPER_ADMIN_EMAIL||'';
     if(bootstrapEmail&&session.user.email.toLowerCase()===bootstrapEmail.toLowerCase()&&row.role!=='super_admin'){
       await client.query("UPDATE app_accounts SET role='super_admin' WHERE user_id=$1",[session.user.id]);
       await client.query('INSERT INTO admin_audit(id,actor_id,target_id,action,reason) VALUES($1,$2,$2,$3,$4)',[randomUUID(),session.user.id,'bootstrap_super_admin','Verified server-authorized bootstrap email authenticated.']);row={...row,role:'super_admin'};

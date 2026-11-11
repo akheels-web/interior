@@ -23,6 +23,8 @@
 | Layer | Technology |
 | :--- | :--- |
 | **Framework & Routing** | Next.js `16.4.3` (App Router, Turbopack), React `19.2.0`, TypeScript `5.9` |
+| **UI & Styling** | Tailwind CSS `4.3` (utilities only, no preflight) mapped to the brand tokens in `src/brand/brand.css`; shadcn-style primitives on `radix-ui` `1.8` (`src/components/ui`); Geist Variable (body), Fraunces Variable (display serif), Space Grotesk Variable (studio editor) |
+| **Landing Motion** | The studio's own Three.js renderer driven by scroll (`src/marketing/LiveFilm.tsx`), `lenis` `1.3` smooth scrolling, CSS-driven reveals and pointer interactions (`src/marketing/ScrollEffects.tsx`) |
 | **3D Viewport & Rendering** | Three.js `0.185.0` (`WebGLRenderer`, ACES Filmic tone mapping, PCF soft shadows, procedural `CanvasTexture` materials, GLSL airflow shaders) |
 | **Floor Plan Reconstruction** | `pdfjs-dist` `6.2` (lazy-loaded client PDF rasterizer), interactive 2D polygon/wall sketch planner (`src/SketchPlanner.tsx`, `src/PdfPlanner.tsx`) |
 | **Client Presentation Export** | `jspdf` `4.2` (multi-page landscape A4 architectural presentation + itemized BOQ schedule) |
@@ -81,16 +83,30 @@
 
 ```text
 interior/
-├── app/                        # Next.js App Router pages & API endpoints
-│   ├── (auth)/                 # Sign-in, sign-up, password reset, email verification
-│   ├── (workspace)/            # Dashboard, studio editor (/projects/[id]), billing, settings, admin
-│   ├── api/                    # REST routes for projects, plans, billing, webhooks, admin, health
-│   ├── layout.tsx              # Root layout & typography (Geist Variable + Space Grotesk)
-│   └── page.tsx                # Public marketing & product landing page
 ├── migrations/                 # SQL schema migrations & runner (migrations/runner.ts)
-├── public/                     # Static brand assets, icons, and PDF.js worker
+├── public/                     # Static brand assets, landing poster images, and PDF.js worker
 ├── scripts/                    # Local setup, database seeding, PDF worker copy, ops worker
 ├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── page.tsx            # Public landing page
+│   │   ├── layout.tsx          # Root layout & global stylesheets
+│   │   ├── tailwind.css        # Tailwind theme mapped to the brand tokens
+│   │   ├── error.tsx           # Route error boundary (global-error.tsx covers the root layout)
+│   │   ├── demo/               # No-login 3D studio sandbox (/demo)
+│   │   ├── dashboard/, billing/, profile/, admin/   # Signed-in workspace routes
+│   │   ├── studio/[id]/        # Studio editor for a saved project
+│   │   ├── login/, register/, forgot-password/, reset-password/, verify-email/, two-factor/
+│   │   └── api/                # REST routes for projects, plans, billing, webhooks, admin, health, auth
+│   ├── components/ui/          # shadcn-style primitives: Tooltip (Hint, HelpHint), Card, Badge, Progress, Skeleton
+│   ├── marketing/              # Landing page sections
+│   │   ├── LiveFilm.tsx        # Scroll-driven film rendered live by StudioScene
+│   │   ├── MaterialBand.tsx    # Catalogue marquee and scroll-filled statement
+│   │   ├── MaterialBoard.tsx   # Pinned gallery painted from the engine's floor & wall textures
+│   │   ├── ScrollEffects.tsx   # Smooth scrolling, reveals, pointer follower, magnetic controls
+│   │   └── landing.css, film.css
+│   ├── platform/               # Dashboard, Auth, Billing, Profile & Admin React screens
+│   ├── server/                 # Server-side auth, PostgreSQL repositories, quota, rate limits, Razorpay & R2
+│   ├── brand/                  # Brand tokens, fonts and logo components
 │   ├── App.tsx                 # Main 3D Studio Editor, Inspector, Presentation HUD & BOQ Modal
 │   ├── EditorControls.tsx      # Room polygon outline editor, door/window editor, HVAC controls
 │   ├── FinishControls.tsx      # Sofa, Switchboard, Brand/BOQ Spec, and Wall/Ceiling controls
@@ -107,13 +123,26 @@ interior/
 │   ├── units.ts                # Length (m/cm/mm/ft/in) & area (m²/cm²/sq ft/sq yd) conversions
 │   ├── useCloudSave.ts         # Optimistic revision-checked cloud autosave hook
 │   ├── wallView.ts             # Smart foreground wall cutaway & ghost-wall visibility
-│   ├── platform/               # Dashboard, Auth, Billing, Settings & Admin React screens
-│   └── server/                 # Server-side auth, PostgreSQL repositories, quota, Razorpay & R2
-├── tests/                      # Integration & end-to-end test suites + fixtures
-├── compose.local.yml           # Local Docker Compose (PostgreSQL 16, Redis 7, Mailpit)
+│   └── proxy.ts                # Per-request CSP nonce and security headers
+├── tests/                      # Database test setup, backup tests & fixtures
+├── deploy/                     # Production Caddy proxy, Postgres image, backup units
+├── components.json             # shadcn configuration
+├── postcss.config.mjs          # Tailwind PostCSS plugin
+├── compose.local.yml           # Local Docker Compose (PostgreSQL, Redis, Mailpit)
 ├── next.config.ts              # Next.js 16 configuration & security headers
 └── vitest.config.ts            # Vitest configuration
 ```
+
+### Landing Page (`/`)
+The public page is a progressive enhancement over static content:
+- **Live film**: `LiveFilm.tsx` loads `StudioScene` after first paint and maps scroll progress to the camera, wall height (`StudioScene.setCutawayHeight`), finishes, furniture and lighting. The last chapter lets visitors change the sofa, floor and light, and drag the room on desktop.
+- **Poster**: `public/brand/landing-hero.jpg` and `landing-hero-portrait.jpg` are captured from the same renderer and hold the stage until WebGL is ready. Re-capture them if the opening shot changes.
+- **Material gallery**: `MaterialBoard.tsx` paints each card with `floorTexture()` and `surfaceTexture()`, so the samples and the counts shown always match `src/model.ts`.
+- **Fallbacks**: with `prefers-reduced-motion`, or when WebGL is unavailable, the page shows the poster hero and the chapters as static text; smooth scrolling, the pointer follower and the pinned gallery are not started. Touch devices get a native swipe row instead of the pinned gallery.
+
+### Dashboard & Tooltips
+- **Dashboard** (`src/platform/Projects.tsx`): plan overview cards, quick-start cards, a first-run guide and skeleton loading, built with the `src/components/ui` primitives.
+- **Tooltips**: wrap one control in `<Hint label="…">`, or place `<HelpHint label="…"/>` beside a label for a "?" button. Both are keyboard accessible and render inside open modal dialogs.
 
 ---
 
@@ -160,15 +189,15 @@ Open **`http://127.0.0.1:3000`** in your browser (use `127.0.0.1` rather than `l
 
 | Service | Host Address / Port | Purpose |
 | :--- | :--- | :--- |
-| **Next.js App** | `http://127.0.0.1:3000` | Public landing page (`/`), Dashboard (`/dashboard`), Studio (`/projects/[id]`) |
-| **PostgreSQL 16** | `127.0.0.1:5548` | Primary database (`forma`) & test database (`forma_test`) |
-| **Redis 7** | `127.0.0.1:6388` | Rate limiting, session state & background worker coordination |
+| **Next.js App** | `http://127.0.0.1:3000` | Public landing page (`/`), Demo studio (`/demo`), Dashboard (`/dashboard`), Studio (`/studio/[id]`) |
+| **PostgreSQL 18** | `127.0.0.1:5548` | Primary database (`forma`) & test database (`forma_test`) |
+| **Redis 8** | `127.0.0.1:6388` | Optional rate-limit cache (PostgreSQL is the fallback) |
 | **Mailpit Web UI** | `http://127.0.0.1:8028` | Local email inbox for verification & password-reset links |
 | **Mailpit SMTP** | `127.0.0.1:1028` | Local SMTP capture (no emails leave your machine) |
 
 ### Seeded Local Accounts (`npm run dev:seed`)
 Running `npm run dev:seed` creates three verified local accounts with audited offline development credits and writes their generated credentials to **`.local/development-accounts.json`** (gitignored):
-- `grow.lokal1@gmail.com` — Approved Super-Admin account
+- `admin@forma.local` (or your `SUPER_ADMIN_EMAIL`) — Super-Admin account
 - `studio.one@forma.local` — Designer studio account 1
 - `studio.two@forma.local` — Designer studio account 2
 
@@ -216,6 +245,9 @@ npm run build
 
 ## 9. Security, Billing & Engineering Guardrails
 
+- **Super-Admin Bootstrap**: The super-admin account is whichever address `SUPER_ADMIN_EMAIL` names. There is no built-in fallback, so set it in every environment.
+- **Rate Limiting**: Auth endpoints are limited per account and per client address (`src/server/client-ip.ts`). The address is read only from `X-Real-IP`, which `deploy/Caddyfile` overwrites, and is stored as an HMAC. If another proxy such as Cloudflare is put in front of Caddy, pass the real visitor address through first. Counters use Redis when `REDIS_URL` is set and fall back to PostgreSQL, retrying Redis after 30 seconds.
+- **Browser Security Headers**: A per-request CSP nonce (`src/proxy.ts`), `X-Frame-Options: DENY`, `Cross-Origin-Opener-Policy` and `Cross-Origin-Resource-Policy: same-origin`, and HSTS with `includeSubDomains` on HTTPS. Every subdomain of the production domain must therefore serve HTTPS.
 - **Strict Schema Validation**: Every project load, import, and cloud save is validated by `validateProject()` (`src/model.ts`), enforcing polygon simplicity, opening bounds, valid hex colours, and catalog constraints (up to 30 rooms, 32 corners/room, 300 objects).
 - **3D Bounding-Box Contract**: `fitFurnitureDimensions()` (`src/scene.ts`) guarantees that every procedural 3D mesh—across all 43 catalog kinds, 8 sofa shapes, and 7 switchboard modules—matches its exact `width × height × depth` in metres with `min.y === 0`.
 - **Incremental Scene Sync**: `StudioScene.syncProject()` diffs item properties and only rebuilds 3D geometry when visual attributes change, keeping X/Z drag operations and idle frames fast.

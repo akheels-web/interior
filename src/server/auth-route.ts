@@ -3,6 +3,7 @@ import { auth } from './auth';
 import { assertRuntimeConfiguration } from './runtime-config';
 import { assertMutation, jsonBody, rateLimit } from './access';
 import { HttpError, pool, transaction } from './db';
+import { clientIpKey } from './client-ip';
 
 let activeAuth=0;
 export async function handleAuth(request:Request){
@@ -26,6 +27,7 @@ export async function handleAuth(request:Request){
         const old=await auth.api.getSession({headers:request.headers,query:{disableCookieCache:true}});
         if(old&&!old.user.twoFactorEnabled){const factor=await pool.query('SELECT secret FROM "twoFactor" WHERE "userId"=$1',[old.user.id]);if(factor.rows[0])enrollmentProof={userId:old.user.id,secret:factor.rows[0].secret};}
       }
+      const ip=clientIpKey(request.headers);if(ip)await rateLimit(ip,'auth-ip',120,300);
       if(typeof body.email==='string'&&['/sign-in/email','/request-password-reset','/send-verification-email','/sign-up/email'].some(p=>path.endsWith(p))){
         const key=createHmac('sha256',process.env.BETTER_AUTH_SECRET||'local-only').update(body.email.trim().toLowerCase()).digest('hex');
         await rateLimit(key,'auth-email',12,300);
@@ -33,7 +35,7 @@ export async function handleAuth(request:Request){
       const headers=new Headers(request.headers);headers.delete('content-length');
       request=new Request(request,{headers,body:JSON.stringify(body)});
     }
-    if(request.method==='POST'){if(activeAuth>=8)throw new HttpError(429,'Sign-in is busy. Please try again in a moment.','AUTH_BUSY');activeAuth++;reserved=true;}
+    if(request.method==='POST'){if(activeAuth>=32)throw new HttpError(429,'Sign-in is busy. Please try again in a moment.','AUTH_BUSY');activeAuth++;reserved=true;}
     const response=await auth.handler(request);
     if(response.ok&&request.method==='POST'&&(preserveAssurance||path.endsWith('/two-factor/verify-totp')||path.endsWith('/two-factor/verify-backup-code'))){
       // Only successful factor verification can establish assurance. Session creation time is
