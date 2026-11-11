@@ -1,5 +1,5 @@
 import {describe,expect,it,vi} from 'vitest';
-import {BoxGeometry,Box3,Group,Mesh,MeshPhysicalMaterial,MeshStandardMaterial,PerspectiveCamera,Plane,Vector3} from 'three';
+import {BoxGeometry,Box3,DirectionalLight,Group,HemisphereLight,Mesh,MeshPhysicalMaterial,MeshStandardMaterial,PerspectiveCamera,Plane,Vector3} from 'three';
 import {applyWallView,shellClipEnabled} from './wallView';
 import {createProject,defaultSettings} from './model';
 import {StudioScene} from './scene';
@@ -28,7 +28,7 @@ describe('full-height and optional see-through walls',()=>{
   });
   it('removes optional whole-home clipping from both walls and doors when Full walls is selected',()=>{
     const {group,solid}=setup(),door=new Group(),leaf=new Mesh(new BoxGeometry(1,2,.04),new MeshStandardMaterial());door.userData.door=true;door.add(leaf);const root=new Group();root.add(group,door);
-    const project=createProject(),settings={...defaultSettings,wholeHome:true},context={lastProject:project,settings,dirty:false,root,walls:[{group}],cutawayPlane:new Plane(new Vector3(0,-1,0),1.05),grid:{visible:false},air:{visible:false},electric:{visible:false},sun:{intensity:0},ambient:{intensity:0},lamps:[],fit:vi.fn(),setSelection:vi.fn()};
+    const project=createProject(),settings={...defaultSettings,wholeHome:true},context={lastProject:project,settings,dirty:false,root,walls:[{group}],cutawayPlane:new Plane(new Vector3(0,-1,0),1.05),grid:{visible:false},air:{visible:false},electric:{visible:false},sun:new DirectionalLight(),ambient:new HemisphereLight(),lamps:[],fit:vi.fn(),setSelection:vi.fn()};
     Reflect.apply(StudioScene.prototype.update,context,[project,{...settings,cutaway:true},null]);expect(solid.material.clippingPlanes).toHaveLength(1);expect(leaf.material.clippingPlanes).toHaveLength(1);
     Reflect.apply(StudioScene.prototype.update,context,[project,settings,null]);expect(solid.material.clippingPlanes).toBeNull();expect(leaf.material.clippingPlanes).toBeNull();expect(shellClipEnabled(settings)).toBe(false);expect(shellClipEnabled({...settings,cutaway:true,camera:'walk'})).toBe(false);
   });
